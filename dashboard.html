@@ -181,7 +181,6 @@
   .pw-toggle svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   .edit-input{flex:1;min-width:0;background:var(--panel-2);border:1px solid var(--accent);border-radius:8px;color:var(--txt);padding:8px 12px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:16px;outline:none;box-shadow:0 0 0 3px rgba(91,149,255,.2)}
 
-  /* ============ Server rows ============ */
   .sp-app-cell{font-weight:600;color:var(--txt);font-size:14.5px;overflow:hidden}
   .sp-app-cell.no-app .srv-app-name{color:var(--muted);font-style:italic;font-weight:600}
   .sp-tags-cell{overflow:hidden}
@@ -208,22 +207,35 @@
   .tag.t-dc{background:rgba(255,204,0,.14);color:var(--warn);border-color:rgba(255,204,0,.4)}
   .tag.t-dc.active{background:var(--warn);color:#1a1300;border-color:transparent}
 
-  /* ============ Tag filter panel ============ */
-  .tag-filter-panel{
-    padding:10px 20px;
-    border-bottom:1px solid var(--line-soft);
-    background:rgba(0,0,0,.16);
-    display:flex;align-items:center;gap:8px;flex-wrap:wrap;
-    animation:slide .18s ease-out;
+  /* ============ Tag filter dropdown ============ */
+  .tag-filter-wrap{position:relative;display:inline-block}
+  .tag-filter-dropdown{
+    position:absolute;
+    top:calc(100% + 8px);
+    right:0;
+    min-width:240px;
+    max-width:400px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:11px;
+    padding:10px;
+    box-shadow:0 24px 60px -22px rgba(0,0,0,.85);
+    z-index:85;
+    animation:dropDown .16s ease-out;
+    display:flex;
+    align-items:flex-start;
+    gap:8px;
   }
-  html[data-theme="light"] .tag-filter-panel,html[data-theme="solarized"] .tag-filter-panel{background:var(--panel-2)}
-  .tag-filter-panel.hidden{display:none}
-  .tag-filter-label{
-    font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;
-    color:var(--muted);margin-right:4px;flex:none;
+  .tag-filter-dropdown.hidden{display:none}
+  .tag-filter-chips{
+    flex:1;min-width:0;
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    align-items:center;
+    align-content:flex-start;
   }
-  .tag-filter-chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center;flex:1;min-width:0}
-  .tag-filter-empty{font-size:13px;color:var(--muted);opacity:.7;font-style:italic}
+  .tag-filter-empty{font-size:12.5px;color:var(--muted);opacity:.7;font-style:italic}
   .tag-filter-chip{
     display:inline-flex;align-items:center;
     padding:5px 12px;border-radius:20px;
@@ -243,14 +255,29 @@
   .tag-filter-chip.t-dc{background:rgba(255,204,0,.14);color:var(--warn);border-color:rgba(255,204,0,.4)}
   .tag-filter-chip.t-dc:hover{background:rgba(255,204,0,.28);color:var(--txt);border-color:rgba(255,204,0,.7)}
   .tag-filter-chip.t-dc.active{background:var(--warn);color:#1a1300;border-color:transparent;box-shadow:0 4px 12px -6px rgba(255,204,0,.9)}
-  .tag-filter-clear{
-    background:transparent;border:1px dashed var(--line);
-    color:var(--muted);font-family:inherit;
-    font-size:11px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;
-    padding:5px 12px;border-radius:20px;cursor:pointer;transition:.15s;
-    flex:none;margin-left:auto;
+  .tag-filter-reset{
+    flex:none;
+    width:26px;height:26px;
+    border-radius:50%;
+    display:inline-flex;align-items:center;justify-content:center;
+    border:1px solid var(--line);
+    background:var(--panel-2);
+    color:var(--warn);
+    cursor:pointer;padding:0;
+    transition:transform .25s ease, background .15s, border-color .15s, color .15s;
   }
-  .tag-filter-clear:hover{border-color:var(--bad);color:var(--bad);border-style:solid}
+  .tag-filter-reset:hover{
+    background:rgba(255,204,0,.16);
+    border-color:var(--warn);
+    color:var(--warn);
+    transform:rotate(-90deg);
+  }
+  .tag-filter-reset.hidden{display:none}
+  .tag-filter-reset svg{
+    width:14px;height:14px;
+    stroke:currentColor;fill:none;
+    stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;
+  }
 
   tr.dragging{opacity:.4}
   .group-head.drag-over{background:linear-gradient(180deg,rgba(91,149,255,.22),rgba(91,149,255,.08))!important;box-shadow:inset 4px 0 0 var(--accent)!important}
@@ -401,7 +428,7 @@
   .note-ico.del:hover{color:var(--bad);background:rgba(255,107,107,.14)}
   .note-collapse-btn svg{transition:transform .25s ease}
   .note.collapsed .note-collapse-btn svg{transform:rotate(-90deg)}
-  .note-body-wrap{display:grid;grid-template-rows:1fr;transition:grid-template-rows .25s ease}
+  .note-body-wrap{display:grid;grid-template-rows:1fr;flex:1;min-height:0;transition:grid-template-rows .25s ease}
   .note.collapsed .note-body-wrap{grid-template-rows:0fr}
   .note-body-inner{overflow:hidden;min-height:0;display:flex;flex-direction:column;flex:1}
   .note-link{flex:none;display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;color:var(--ok);opacity:.9;cursor:default}
@@ -527,7 +554,7 @@
     .note-ico.mini{display:none}
     .note-modal-card{height:95vh;max-width:none}
     .security-card{padding:28px 22px 22px}
-    .tag-filter-clear{margin-left:0}
+    .tag-filter-dropdown{right:auto;left:0;min-width:220px;max-width:calc(100vw - 60px)}
   }
 </style>
 </head>
@@ -673,20 +700,24 @@
         <span class="count servers" id="countServers">0</span>
       </div>
       <div class="card-head-right">
-        <button class="sort-btn" id="tagFilterBtn" title="Filter servers by tag">
-          <svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><circle cx="7" cy="7" r="1.5"/></svg>
-          <span>Filter by tag</span>
-        </button>
+        <div class="tag-filter-wrap" id="tagFilterWrap">
+          <button class="sort-btn" id="tagFilterBtn" title="Filter servers by tag">
+            <svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><circle cx="7" cy="7" r="1.5"/></svg>
+            <span id="tagFilterLabel">Filter by tag</span>
+          </button>
+          <div class="tag-filter-dropdown hidden" id="tagFilterDropdown">
+            <div class="tag-filter-chips" id="tagFilterChips"></div>
+            <button type="button" class="tag-filter-reset hidden" id="tagFilterReset" title="Reset tag filter">
+              <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+            </button>
+          </div>
+        </div>
         <div class="search-wrap"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg><input id="srvSearch" type="search" placeholder="Search servers…" autocomplete="off"></div>
         <button class="sort-btn" id="sortBtn" title="Toggle sort order"><svg viewBox="0 0 24 24" id="sortIcon"><path d="M4 7h12"/><path d="M4 12h8"/><path d="M4 17h4"/><path d="M17 5v14"/><path d="M14 9l3-4 3 4"/></svg><span id="sortLabel">A–Z</span></button>
         <button class="add-btn servers" id="toggleAddGroup"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>New group</button>
       </div>
     </div>
     <div class="card-body-wrap"><div class="card-body-inner">
-      <div class="tag-filter-panel hidden" id="tagFilterPanel">
-        <span class="tag-filter-label">🏷️ Filter:</span>
-        <div class="tag-filter-chips" id="tagFilterChips"></div>
-      </div>
       <div class="add-panel hidden" id="addPanelGroup">
         <form class="add-form" id="addGroupForm">
           <input id="newGroupName" placeholder="Group name (e.g. conven)" autocomplete="off">
@@ -768,7 +799,8 @@
   const $ = id => document.getElementById(id);
 
   const menuBtn=$('menuBtn'),menuPanel=$('menuPanel');
-  const toggleAddCred=$('toggleAddCred'),toggleAddGroup=$('toggleAddGroup'),addForm=$('addForm'),addGroupForm=$('addGroupForm'),addPanelCred=$('addPanelCred'),addPanelGroup=$('addPanelGroup'),listCredentials=$('listCredentials'),listServers=$('listServers'),listNotesEl=$('listNotes'),countCredEl=$('countCredentials'),countSrvEl=$('countServers'),countNotesEl=$('countNotes'),newGroupName=$('newGroupName'),sortBtn=$('sortBtn'),sortLabel=$('sortLabel'),sortIcon=$('sortIcon'),credSortBtn=$('credSortBtn'),credSortMenu=$('credSortMenu'),credSortLabel=$('credSortLabel'),toast=$('toast'),toastMsg=$('toastMsg'),backupBanner=$('backupBanner'),backupMsg=$('backupMsg'),credSearchEl=$('credSearch'),srvSearchEl=$('srvSearch'),noteSearchEl=$('noteSearch'),notesCard=$('notesCard'),noteImportFile=$('noteImportFile'),resetSortBtn=$('resetSortBtn'),noteModal=$('noteModal'),noteModalTitle=$('noteModalTitle'),noteModalBody=$('noteModalBody'),noteModalMeta=$('noteModalMeta'),pwdBanner=$('pwdBanner'),securityOverlay=$('securityOverlay'),securityCard=$('securityCard'),secIcon=$('secIcon'),secTitle=$('secTitle'),secSub=$('secSub'),secFields=$('secFields'),secError=$('secError'),secPrimary=$('secPrimary'),secSecondary=$('secSecondary'),secForgot=$('secForgot'),secForgotLink=$('secForgotLink'),tagFilterBtn=$('tagFilterBtn'),tagFilterPanel=$('tagFilterPanel'),tagFilterChips=$('tagFilterChips');
+  const toggleAddCred=$('toggleAddCred'),toggleAddGroup=$('toggleAddGroup'),addForm=$('addForm'),addGroupForm=$('addGroupForm'),addPanelCred=$('addPanelCred'),addPanelGroup=$('addPanelGroup'),listCredentials=$('listCredentials'),listServers=$('listServers'),listNotesEl=$('listNotes'),countCredEl=$('countCredentials'),countSrvEl=$('countServers'),countNotesEl=$('countNotes'),newGroupName=$('newGroupName'),sortBtn=$('sortBtn'),sortLabel=$('sortLabel'),sortIcon=$('sortIcon'),credSortBtn=$('credSortBtn'),credSortMenu=$('credSortMenu'),credSortLabel=$('credSortLabel'),toast=$('toast'),toastMsg=$('toastMsg'),backupBanner=$('backupBanner'),backupMsg=$('backupMsg'),credSearchEl=$('credSearch'),srvSearchEl=$('srvSearch'),noteSearchEl=$('noteSearch'),notesCard=$('notesCard'),noteImportFile=$('noteImportFile'),resetSortBtn=$('resetSortBtn'),noteModal=$('noteModal'),noteModalTitle=$('noteModalTitle'),noteModalBody=$('noteModalBody'),noteModalMeta=$('noteModalMeta'),pwdBanner=$('pwdBanner'),securityOverlay=$('securityOverlay'),securityCard=$('securityCard'),secIcon=$('secIcon'),secTitle=$('secTitle'),secSub=$('secSub'),secFields=$('secFields'),secError=$('secError'),secPrimary=$('secPrimary'),secSecondary=$('secSecondary'),secForgot=$('secForgot'),secForgotLink=$('secForgotLink');
+  const tagFilterBtn=$('tagFilterBtn'),tagFilterDropdown=$('tagFilterDropdown'),tagFilterChips=$('tagFilterChips'),tagFilterLabel=$('tagFilterLabel'),tagFilterReset=$('tagFilterReset'),tagFilterWrap=$('tagFilterWrap');
 
   let entries=[], groups=[], notes=[];
   let editingId=null, editingServer=null, editingGroupId=null, editingExtraId=null, addingToGroupId=null;
@@ -994,7 +1026,7 @@
   document.querySelectorAll('.card-collapse-btn').forEach(btn=>btn.addEventListener('click',e=>{e.stopPropagation();toggleCard(btn.dataset.card);}));
   document.querySelectorAll('.card-head').forEach(head=>{
     head.addEventListener('click',e=>{
-      if(e.target.closest('button, input, select, textarea, a, label, .card-head-right, .search-wrap, .sort-wrap, .active-filters, .filter-chip, .filter-clear, .menu-panel, .menu-btn'))return;
+      if(e.target.closest('button, input, select, textarea, a, label, .card-head-right, .search-wrap, .sort-wrap, .tag-filter-wrap, .menu-panel, .menu-btn'))return;
       const n=head.getAttribute('data-card-head');if(!n)return;toggleCard(n);
     });
   });
@@ -1042,7 +1074,7 @@
   listCredentials.addEventListener('keydown',ev=>{if(!ev.target.classList.contains('edit-input'))return;const r=ev.target.closest('tr[data-id]');if(!r)return;const id=r.dataset.id;if(ev.key==='Enter'){ev.preventDefault();saveEdit(id);}if(ev.key==='Escape'){ev.preventDefault();cancelEdit();}});
   addForm.addEventListener('submit',ev=>{ev.preventDefault();const fd=new FormData(addForm);const un=(fd.get('username')||'').trim();if(entries.some(x=>x.username.toLowerCase()===un.toLowerCase())){if(!confirm('A credential for "'+un+'" already exists.\n\nAdd another one anyway?')){addForm.username.focus();return;}}const nid=uid();entries.push({id:nid,username:un,password:fd.get('password')||'',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});visiblePasswords.delete(nid);saveCreds();addForm.reset();renderCredentials();updateStats();checkPasswordBanner();addForm.username.focus();});
 
-  /* ============ TAG FILTER BAR ============ */
+  /* ============ TAG FILTER DROPDOWN ============ */
   function collectAllTags(){
     const set=new Set();
     groups.forEach(g=>{
@@ -1055,45 +1087,49 @@
     });
     return [...set].sort((a,b)=>a.localeCompare(b));
   }
-  function renderTagFilterBar(){
+
+  function renderTagFilterDropdown(){
     const allTags=collectAllTags();
-    // Hide button + close panel if no tags
+    [...activeTags].forEach(t=>{if(allTags.indexOf(t)===-1)activeTags.delete(t);});
+
     if(!allTags.length){
-      tagFilterBtn.style.display='none';
-      tagFilterPanel.classList.add('hidden');
+      tagFilterWrap.style.display='none';
+      tagFilterDropdown.classList.add('hidden');
       tagFilterBtn.classList.remove('active');
-      // also clear active filters if data no longer has those tags
-      let changed=false;
-      [...activeTags].forEach(t=>{if(allTags.indexOf(t)===-1){activeTags.delete(t);changed=true;}});
-      if(changed)renderServers();
       return;
     }
-    tagFilterBtn.style.display='';
-    // Drop active tags that no longer exist
-    let dropped=false;
-    [...activeTags].forEach(t=>{if(allTags.indexOf(t)===-1){activeTags.delete(t);dropped=true;}});
+    tagFilterWrap.style.display='';
 
-    const activeCount=activeTags.size;
-    tagFilterBtn.classList.toggle('active',activeCount>0);
     tagFilterChips.innerHTML=allTags.map(t=>{
       const k=String(t).toLowerCase();
       const cls=tagClass(k);
       const active=activeTags.has(k)?' active':'';
       return '<button type="button" class="tag-filter-chip '+cls+active+'" data-tag="'+esc(k)+'">'+esc(t)+'</button>';
-    }).join('') + (activeCount>0 ? '<button type="button" class="tag-filter-clear" id="tagFilterClear">Clear all</button>' : '');
+    }).join('');
+
+    const hasActive=activeTags.size>0;
+    tagFilterReset.classList.toggle('hidden',!hasActive);
+    tagFilterLabel.textContent=hasActive?'Filter ('+activeTags.size+')':'Filter by tag';
+
+    const open=!tagFilterDropdown.classList.contains('hidden');
+    tagFilterBtn.classList.toggle('active',open||hasActive);
   }
-  // Toggle panel visibility from the button
+
   tagFilterBtn.addEventListener('click',e=>{
     e.stopPropagation();
-    tagFilterPanel.classList.toggle('hidden');
-    tagFilterBtn.classList.toggle('active',!tagFilterPanel.classList.contains('hidden'));
-    // When opening, always show current tags
-    if(!tagFilterPanel.classList.contains('hidden')) renderTagFilterBar();
+    const isOpen=!tagFilterDropdown.classList.contains('hidden');
+    if(isOpen){
+      tagFilterDropdown.classList.add('hidden');
+    } else {
+      renderTagFilterDropdown();
+      tagFilterDropdown.classList.remove('hidden');
+    }
+    const nowOpen=!tagFilterDropdown.classList.contains('hidden');
+    tagFilterBtn.classList.toggle('active',nowOpen||activeTags.size>0);
   });
-  // Chip clicks
+
   tagFilterChips.addEventListener('click',e=>{
-    const clearBtn=e.target.closest('#tagFilterClear');
-    if(clearBtn){activeTags.clear();renderServers();return;}
+    e.stopPropagation();
     const chip=e.target.closest('.tag-filter-chip');
     if(!chip)return;
     const t=chip.dataset.tag;
@@ -1101,9 +1137,24 @@
     renderServers();
   });
 
+  tagFilterReset.addEventListener('click',e=>{
+    e.stopPropagation();
+    activeTags.clear();
+    renderServers();
+  });
+
+  document.addEventListener('click',e=>{
+    if(!tagFilterDropdown.classList.contains('hidden') &&
+       !tagFilterDropdown.contains(e.target) &&
+       !tagFilterBtn.contains(e.target)){
+      tagFilterDropdown.classList.add('hidden');
+      tagFilterBtn.classList.toggle('active',activeTags.size>0);
+    }
+  });
+
   function renderServers(){
     countSrvEl.textContent=totalServerCount();
-    renderTagFilterBar();
+    renderTagFilterDropdown();
     if(!groups.length){listServers.innerHTML='<div class="empty"><span class="big">📁</span>No server groups yet.<div class="hint">Create a group like "conven" or "production". (Shortcut: <b>g</b>)</div><button id="emptyCreateGroup">'+SVG_PLUS+'Create first group</button></div>';const b=$('emptyCreateGroup');if(b)b.addEventListener('click',()=>{addPanelGroup.classList.remove('hidden');toggleAddGroup.classList.add('active');newGroupName.focus();});return;}
     let view=groups;
     const filtering=activeTags.size>0||srvQuery.trim();
@@ -1339,6 +1390,8 @@
     const contentLeft=gr.left+padL;
     const contentRight=gr.right-padR;
     resizeState={noteEl,id:n.id,dir,startX:e.clientX,startY:e.clientY,startLeft:r.left,startTop:r.top,startW:r.width,startH:r.height,minW:240,minH:140,maxW:1400,maxH:1200,contentLeft,contentRight};
+    // ---- FIX: apply custom-sized class immediately so textarea uncaps during drag ----
+    noteEl.classList.add('custom-sized');
     noteEl.style.position='fixed';
     noteEl.style.left=Math.round(r.left)+'px';
     noteEl.style.top=Math.round(r.top)+'px';
@@ -1603,7 +1656,7 @@
 
   $('exportAllBtn').addEventListener('click',()=>{
     if(dirtyNotes.size){notes.forEach(n=>{if(dirtyNotes.has(n.id))n.updatedAt=new Date().toISOString();});saveNotes();dirtyNotes.clear();renderNotes();}
-    const payload={app:'vm-credentials-manager',version:15,exportedAt:new Date().toISOString(),credentials:entries,serverGroups:groups,notes:notes};
+    const payload={app:'vm-credentials-manager',version:16,exportedAt:new Date().toISOString(),credentials:entries,serverGroups:groups,notes:notes};
     const b=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
     const a=document.createElement('a');a.href=URL.createObjectURL(b);
     const ts=new Date().toISOString().slice(0,19).replace(/[:T]/g,'-');
@@ -1661,7 +1714,7 @@
 
   document.addEventListener('keydown',e=>{
     if(isLocked)return;
-    if(e.key==='Escape'){credSortMenu.classList.add('hidden');closeQuickMenu();closeColorPicker();closeMenu();if(!addPanelCred.classList.contains('hidden'))closePanel('cred');if(!addPanelGroup.classList.contains('hidden'))closePanel('group');}
+    if(e.key==='Escape'){credSortMenu.classList.add('hidden');closeQuickMenu();closeColorPicker();closeMenu();if(!addPanelCred.classList.contains('hidden'))closePanel('cred');if(!addPanelGroup.classList.contains('hidden'))closePanel('group');if(!tagFilterDropdown.classList.contains('hidden')){tagFilterDropdown.classList.add('hidden');tagFilterBtn.classList.toggle('active',activeTags.size>0);}}
     const tag=(e.target.tagName||'').toLowerCase();const inF=tag==='input'||tag==='textarea'||e.target.isContentEditable;
     if(inF||e.ctrlKey||e.metaKey||e.altKey)return;
     if(e.key==='n'){e.preventDefault();if(addPanelCred.classList.contains('hidden'))toggleAddCred.click();addForm.username.focus();}
