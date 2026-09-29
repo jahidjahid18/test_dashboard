@@ -207,43 +207,12 @@
   .tag.t-dc{background:rgba(255,204,0,.14);color:var(--warn);border-color:rgba(255,204,0,.4)}
   .tag.t-dc.active{background:var(--warn);color:#1a1300;border-color:transparent}
 
-  /* ============ Tag filter dropdown ============ */
   .tag-filter-wrap{position:relative;display:inline-block}
-  .tag-filter-dropdown{
-    position:absolute;
-    top:calc(100% + 8px);
-    right:0;
-    min-width:240px;
-    max-width:400px;
-    background:var(--panel);
-    border:1px solid var(--line);
-    border-radius:11px;
-    padding:10px;
-    box-shadow:0 24px 60px -22px rgba(0,0,0,.85);
-    z-index:85;
-    animation:dropDown .16s ease-out;
-    display:flex;
-    align-items:flex-start;
-    gap:8px;
-  }
+  .tag-filter-dropdown{position:absolute;top:calc(100% + 8px);right:0;min-width:240px;max-width:400px;background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:10px;box-shadow:0 24px 60px -22px rgba(0,0,0,.85);z-index:85;animation:dropDown .16s ease-out;display:flex;align-items:flex-start;gap:8px}
   .tag-filter-dropdown.hidden{display:none}
-  .tag-filter-chips{
-    flex:1;min-width:0;
-    display:flex;
-    flex-wrap:wrap;
-    gap:6px;
-    align-items:center;
-    align-content:flex-start;
-  }
+  .tag-filter-chips{flex:1;min-width:0;display:flex;flex-wrap:wrap;gap:6px;align-items:center;align-content:flex-start}
   .tag-filter-empty{font-size:12.5px;color:var(--muted);opacity:.7;font-style:italic}
-  .tag-filter-chip{
-    display:inline-flex;align-items:center;
-    padding:5px 12px;border-radius:20px;
-    font-family:inherit;font-size:11.5px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;
-    background:rgba(91,149,255,.16);color:var(--accent-2);
-    border:1px solid rgba(91,149,255,.45);
-    cursor:pointer;transition:.15s;user-select:none;
-  }
+  .tag-filter-chip{display:inline-flex;align-items:center;padding:5px 12px;border-radius:20px;font-family:inherit;font-size:11.5px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;background:rgba(91,149,255,.16);color:var(--accent-2);border:1px solid rgba(91,149,255,.45);cursor:pointer;transition:.15s;user-select:none}
   .tag-filter-chip:hover{background:rgba(91,149,255,.3);color:var(--txt);border-color:rgba(91,149,255,.7)}
   .tag-filter-chip.active{background:var(--accent);color:#fff;border-color:transparent;box-shadow:0 4px 12px -6px rgba(91,149,255,.9)}
   .tag-filter-chip.t-prod{background:rgba(255,107,107,.14);color:var(--bad);border-color:rgba(255,107,107,.4)}
@@ -255,29 +224,10 @@
   .tag-filter-chip.t-dc{background:rgba(255,204,0,.14);color:var(--warn);border-color:rgba(255,204,0,.4)}
   .tag-filter-chip.t-dc:hover{background:rgba(255,204,0,.28);color:var(--txt);border-color:rgba(255,204,0,.7)}
   .tag-filter-chip.t-dc.active{background:var(--warn);color:#1a1300;border-color:transparent;box-shadow:0 4px 12px -6px rgba(255,204,0,.9)}
-  .tag-filter-reset{
-    flex:none;
-    width:26px;height:26px;
-    border-radius:50%;
-    display:inline-flex;align-items:center;justify-content:center;
-    border:1px solid var(--line);
-    background:var(--panel-2);
-    color:var(--warn);
-    cursor:pointer;padding:0;
-    transition:transform .25s ease, background .15s, border-color .15s, color .15s;
-  }
-  .tag-filter-reset:hover{
-    background:rgba(255,204,0,.16);
-    border-color:var(--warn);
-    color:var(--warn);
-    transform:rotate(-90deg);
-  }
+  .tag-filter-reset{flex:none;width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);background:var(--panel-2);color:var(--warn);cursor:pointer;padding:0;transition:transform .25s ease, background .15s, border-color .15s, color .15s}
+  .tag-filter-reset:hover{background:rgba(255,204,0,.16);border-color:var(--warn);color:var(--warn);transform:rotate(-90deg)}
   .tag-filter-reset.hidden{display:none}
-  .tag-filter-reset svg{
-    width:14px;height:14px;
-    stroke:currentColor;fill:none;
-    stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;
-  }
+  .tag-filter-reset svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
 
   tr.dragging{opacity:.4}
   .group-head.drag-over{background:linear-gradient(180deg,rgba(91,149,255,.22),rgba(91,149,255,.08))!important;box-shadow:inset 4px 0 0 var(--accent)!important}
@@ -372,7 +322,11 @@
   .empty button svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.6}
 
   /* ============ Notes ============ */
-  .notes-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;padding:16px 20px;align-items:start;position:relative}
+  .notes-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;padding:20px 20px;align-items:start;position:relative}
+  /* ============ Notes: free canvas mode ============ */
+  .notes-canvas{position:relative;padding:20px;min-height:400px;display:block}
+  .notes-canvas .note{position:absolute;width:min(340px,calc(100% - 40px));margin:0}
+  .notes-canvas .note-body{max-height:none}
   .note{display:flex;flex-direction:column;background:var(--panel-2);border:1px solid var(--line);border-radius:12px;overflow:hidden;transition:border-color .15s,box-shadow .15s;min-height:180px;position:relative}
   .note.collapsed{min-height:auto}
   .note:hover{border-color:var(--accent)}
@@ -391,7 +345,7 @@
   .nr[data-dir="sw"]{bottom:0;left:0;width:14px;height:14px;cursor:nesw-resize}
   .nr[data-dir="se"]{bottom:0;right:0;width:14px;height:14px;cursor:nwse-resize}
   .note.collapsed .nr{display:none}
-  .note.custom-sized .nr[data-dir="se"]::after{content:'';position:absolute;right:3px;bottom:3px;width:8px;height:8px;border-right:2px solid var(--accent-2);border-bottom:2px solid var(--accent-2);opacity:.6}
+  .note.custom-sized .nr[data-dir="se"]::after,.notes-canvas .note .nr[data-dir="se"]::after{content:'';position:absolute;right:3px;bottom:3px;width:8px;height:8px;border-right:2px solid var(--accent-2);border-bottom:2px solid var(--accent-2);opacity:.6}
   .note[data-color="yellow"]{background:linear-gradient(180deg,rgba(255,204,0,.16),transparent 55%)}
   .note[data-color="red"]{background:linear-gradient(180deg,rgba(255,107,107,.16),transparent 55%)}
   .note[data-color="green"]{background:linear-gradient(180deg,rgba(61,220,132,.16),transparent 55%)}
@@ -555,6 +509,7 @@
     .note-modal-card{height:95vh;max-width:none}
     .security-card{padding:28px 22px 22px}
     .tag-filter-dropdown{right:auto;left:0;min-width:220px;max-width:calc(100vw - 60px)}
+    #notesViewToggle,#autoArrangeBtn{display:none!important}
   }
 </style>
 </head>
@@ -737,6 +692,14 @@
         <span class="count notes" id="countNotes">0</span>
       </div>
       <div class="card-head-right">
+        <button class="sort-btn" id="notesViewToggle" title="Toggle grid / free canvas">
+          <svg viewBox="0 0 24 24" id="notesViewIcon"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          <span id="notesViewLabel">Grid</span>
+        </button>
+        <button class="sort-btn hidden" id="autoArrangeBtn" title="Snap all notes to a tidy grid">
+          <svg viewBox="0 0 24 24"><path d="M3 3h7v7H3z"/><path d="M14 3h7v7h-7z"/><path d="M3 14h7v7H3z"/><path d="M14 14h7v7h-7z"/></svg>
+          Auto-arrange
+        </button>
         <button class="reset-sort-btn hidden" id="resetSortBtn" title="Reset to automatic sorting"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Reset sort</button>
         <div class="search-wrap"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg><input id="noteSearch" type="search" placeholder="Search notes…" autocomplete="off"></div>
         <button class="sort-btn" id="importNotesBtn" title="Import .txt files (linked to disk)"><svg viewBox="0 0 24 24"><path d="M12 21V9"/><path d="M7 14l5-5 5 5"/><path d="M5 3h14"/></svg>Import .txt</button>
@@ -791,7 +754,7 @@
 <script>
 (function(){
   'use strict';
-  const CRED_KEY='vm-credentials-v5', GROUPS_KEY='vm-server-groups-v2', OLD_KEY='vm-server-list-v2', OLD_GROUPS_KEY='vm-server-groups-v1', SORT_KEY='vm-groups-sort', CRED_SORT_KEY='vm-cred-sort', THEME_KEY='vm-theme', LAST_EXPORT_KEY='vm-last-export', NOTES_KEY='vm-notes-v1', CARDS_STATE_KEY='vm-cards-collapsed', AUTOLOCK_KEY='vm-autolock';
+  const CRED_KEY='vm-credentials-v5', GROUPS_KEY='vm-server-groups-v2', OLD_KEY='vm-server-list-v2', OLD_GROUPS_KEY='vm-server-groups-v1', SORT_KEY='vm-groups-sort', CRED_SORT_KEY='vm-cred-sort', THEME_KEY='vm-theme', LAST_EXPORT_KEY='vm-last-export', NOTES_KEY='vm-notes-v1', CARDS_STATE_KEY='vm-cards-collapsed', AUTOLOCK_KEY='vm-autolock', NOTES_VIEW_KEY='vm-notes-view-v1';
   const MASTER_HASH_KEY='vm-master-hash-v1', MASTER_SALT_KEY='vm-master-salt-v1', MASTER_ITER_KEY='vm-master-iter-v1', SESSION_UNLOCK_KEY='vm-session-unlocked-v1', PWD_BANNER_DISMISS_KEY='vm-pwd-banner-dismissed-v1';
   const PBKDF2_ITER = 200000;
   const FSA_SUPPORTED = typeof window !== 'undefined' && typeof window.showSaveFilePicker === 'function' && typeof window.showOpenFilePicker === 'function';
@@ -801,11 +764,13 @@
   const menuBtn=$('menuBtn'),menuPanel=$('menuPanel');
   const toggleAddCred=$('toggleAddCred'),toggleAddGroup=$('toggleAddGroup'),addForm=$('addForm'),addGroupForm=$('addGroupForm'),addPanelCred=$('addPanelCred'),addPanelGroup=$('addPanelGroup'),listCredentials=$('listCredentials'),listServers=$('listServers'),listNotesEl=$('listNotes'),countCredEl=$('countCredentials'),countSrvEl=$('countServers'),countNotesEl=$('countNotes'),newGroupName=$('newGroupName'),sortBtn=$('sortBtn'),sortLabel=$('sortLabel'),sortIcon=$('sortIcon'),credSortBtn=$('credSortBtn'),credSortMenu=$('credSortMenu'),credSortLabel=$('credSortLabel'),toast=$('toast'),toastMsg=$('toastMsg'),backupBanner=$('backupBanner'),backupMsg=$('backupMsg'),credSearchEl=$('credSearch'),srvSearchEl=$('srvSearch'),noteSearchEl=$('noteSearch'),notesCard=$('notesCard'),noteImportFile=$('noteImportFile'),resetSortBtn=$('resetSortBtn'),noteModal=$('noteModal'),noteModalTitle=$('noteModalTitle'),noteModalBody=$('noteModalBody'),noteModalMeta=$('noteModalMeta'),pwdBanner=$('pwdBanner'),securityOverlay=$('securityOverlay'),securityCard=$('securityCard'),secIcon=$('secIcon'),secTitle=$('secTitle'),secSub=$('secSub'),secFields=$('secFields'),secError=$('secError'),secPrimary=$('secPrimary'),secSecondary=$('secSecondary'),secForgot=$('secForgot'),secForgotLink=$('secForgotLink');
   const tagFilterBtn=$('tagFilterBtn'),tagFilterDropdown=$('tagFilterDropdown'),tagFilterChips=$('tagFilterChips'),tagFilterLabel=$('tagFilterLabel'),tagFilterReset=$('tagFilterReset'),tagFilterWrap=$('tagFilterWrap');
+  const notesViewToggle=$('notesViewToggle'),notesViewIcon=$('notesViewIcon'),notesViewLabel=$('notesViewLabel'),autoArrangeBtn=$('autoArrangeBtn');
 
   let entries=[], groups=[], notes=[];
   let editingId=null, editingServer=null, editingGroupId=null, editingExtraId=null, addingToGroupId=null;
   let sortAsc=true, credSort='user-asc', credQuery='', srvQuery='', noteQuery='', colorPopover=null, draggedServer=null;
   let manualSortMode=false;
+  let notesViewMode='grid';
   let dragState=null;
   let wasDrag=false;
   let resizeState=null;
@@ -817,6 +782,9 @@
   let appStarted=false;
   let secMode=null;
   let secForceLock=false;
+  let bringToFrontTimer=null;
+  let lastEffectiveFreeMode=false;
+  let resizeDebounceTimer=null;
   const visiblePasswords=new Set(), activeTags=new Set(), dirtyNotes=new Set(), savingIds=new Set(), noteFileHandles=new Map();
 
   const NOTE_THEMES = ['','yellow','red','green','blue','net','sky','sun','moon','star','aurora','mint','rose'];
@@ -983,6 +951,9 @@
         customW:(typeof n.customW==='number'&&n.customW>=240)?Math.round(n.customW):undefined,
         customH:(typeof n.customH==='number'&&n.customH>=140)?Math.round(n.customH):undefined,
         customLeft:(typeof n.customLeft==='number'&&n.customLeft>=0)?Math.round(n.customLeft):undefined,
+        x:(typeof n.x==='number')?Math.round(n.x):undefined,
+        y:(typeof n.y==='number')?Math.round(n.y):undefined,
+        z:(typeof n.z==='number')?Math.round(n.z):undefined,
         order:typeof n.order==='number'?n.order:undefined,
         createdAt:n.createdAt||new Date().toISOString(), updatedAt:n.updatedAt||new Date().toISOString()
       })):[];
@@ -991,6 +962,7 @@
     }catch(e){notes=[];}
     try{const v=parseInt(localStorage.getItem(AUTOLOCK_KEY)||'10',10);if(!isNaN(v)&&v>=0)autoLockMinutes=v;}catch(e){}
     try{const c=localStorage.getItem(CARDS_STATE_KEY);if(c){const p=JSON.parse(c);if(p&&typeof p==='object'){cardsCollapsed.credentials=!!p.credentials;cardsCollapsed.servers=!!p.servers;cardsCollapsed.notes=!!p.notes;}}}catch(e){}
+    try{const v=localStorage.getItem(NOTES_VIEW_KEY);if(v==='free'||v==='grid')notesViewMode=v;}catch(e){}
   }
   function sanitizeGroup(g){return{id:g.id||uid(),name:String(g.name||'Untitled group'),collapsed:!!g.collapsed,extra:String(g.extra||''),servers:Array.isArray(g.servers)?g.servers.map(s=>({id:s.id||uid(),app:String(s.app||''),host:String(s.host||''),note:String(s.note||''),tags:Array.isArray(s.tags)?s.tags.map(t=>String(t).trim().toLowerCase()).filter(Boolean):[],addedAt:s.addedAt||new Date().toISOString()})).filter(s=>s.host):[]};}
   function saveCreds(){try{localStorage.setItem(CRED_KEY,JSON.stringify(entries));}catch(e){}}
@@ -999,6 +971,7 @@
   function saveSort(){try{localStorage.setItem(SORT_KEY,sortAsc?'asc':'desc');}catch(e){}}
   function saveCredSort(){try{localStorage.setItem(CRED_SORT_KEY,credSort);}catch(e){}}
   function saveCardsState(){try{localStorage.setItem(CARDS_STATE_KEY,JSON.stringify(cardsCollapsed));}catch(e){}}
+  function saveNotesViewMode(){try{localStorage.setItem(NOTES_VIEW_KEY,notesViewMode);}catch(e){}}
 
   function uid(){return(crypto.randomUUID&&crypto.randomUUID())||'id-'+Date.now()+'-'+Math.random().toString(16).slice(2);}
   function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
@@ -1015,6 +988,7 @@
   function showToast(msg){toastMsg.textContent=msg;toast.classList.add('show');clearTimeout(showToast._t);showToast._t=setTimeout(()=>toast.classList.remove('show'),3600);}
   function totalServerCount(){return groups.reduce((s,g)=>s+g.servers.length,0);}
   function updateStats(){const el=$('statsLine');if(!el)return;const p=[];p.push('<b>'+groups.length+'</b> group'+(groups.length===1?'':'s'));p.push('<b>'+totalServerCount()+'</b> server'+(totalServerCount()===1?'':'s'));p.push('<b>'+entries.length+'</b> credential'+(entries.length===1?'':'s'));p.push('<b>'+notes.length+'</b> note'+(notes.length===1?'':'s'));el.innerHTML=p.join(' · ');}
+  function isMobile(){return window.innerWidth<=820;}
 
   function applyCardCollapse(){
     const c=$('cardCredentials'),s=$('cardServers'),n=$('notesCard');
@@ -1290,6 +1264,127 @@
     finally{if(b)b.classList.remove('saving');savingIds.delete(id);}
   }
 
+  /* ============ Free canvas support ============ */
+  function initNewNotePosition(n){
+    if (notesViewMode !== 'free' || isMobile()) return;
+    let baseX = 20, baseY = 20, maxZ = 0;
+    notes.forEach(x => {
+      if (x === n) return;
+      if (typeof x.z === 'number' && x.z > maxZ) maxZ = x.z;
+      if (typeof x.x === 'number' && typeof x.y === 'number' && x.z === maxZ) {
+        baseX = x.x + 30;
+        baseY = x.y + 30;
+      }
+    });
+    const canvasW = listNotesEl.clientWidth || 800;
+    if (baseX > canvasW - 360) { baseX = 20; baseY += 60; }
+    n.x = Math.max(10, baseX);
+    n.y = Math.max(10, baseY);
+    n.z = maxZ + 1;
+  }
+  function bringToFront(id){
+    const n = notes.find(x => x.id === id);
+    if (!n) return;
+    let maxZ = 0;
+    notes.forEach(x => { if (typeof x.z === 'number' && x.z > maxZ) maxZ = x.z; });
+    if (n.z === maxZ) return;
+    n.z = maxZ + 1;
+    const el = listNotesEl.querySelector('.note[data-id="'+id+'"]');
+    if (el) el.style.zIndex = n.z;
+    clearTimeout(bringToFrontTimer);
+    bringToFrontTimer = setTimeout(saveNotes, 400);
+  }
+  function expandCanvasHeight(){
+    const canvas = listNotesEl.querySelector('.notes-canvas');
+    if (!canvas) return;
+    let maxBottom = 0;
+    canvas.querySelectorAll('.note').forEach(el => {
+      const b = el.offsetTop + el.offsetHeight;
+      if (b > maxBottom) maxBottom = b;
+    });
+    canvas.style.minHeight = Math.max(400, maxBottom + 20) + 'px';
+  }
+  function autoArrangeInternal(){
+    if (!notes.length) return;
+    const temp = document.createElement('div');
+    temp.className = 'notes-grid';
+    temp.style.cssText = 'position:absolute;left:-99999px;top:0;visibility:hidden;pointer-events:none;';
+    temp.style.width = (listNotesEl.clientWidth || 800) + 'px';
+    const snapshot = notes.map(n => Object.assign({}, n, { customW: undefined, customH: undefined, customLeft: undefined, collapsed: false }));
+    temp.innerHTML = snapshot.map(n => renderNote(n, false)).join('');
+    document.body.appendChild(temp);
+    void temp.offsetHeight;
+    const cRect = temp.getBoundingClientRect();
+    const notesEls = [...temp.querySelectorAll('.note')];
+    notesEls.forEach((el, i) => {
+      const r = el.getBoundingClientRect();
+      const n = notes.find(x => x.id === el.dataset.id);
+      if (!n) return;
+      n.x = Math.round(r.left - cRect.left);
+      n.y = Math.round(r.top - cRect.top);
+      n.z = i + 1;
+      // keep customW / customH / customLeft — sizes are preserved
+    });
+    temp.remove();
+    saveNotes();
+  }
+  function updateNotesViewToggle(){
+    if (!notesViewToggle) return;
+    const isFree = notesViewMode === 'free';
+    notesViewToggle.classList.toggle('active', isFree);
+    notesViewToggle.title = isFree ? 'Switch to grid view' : 'Switch to free canvas (drag notes anywhere)';
+    notesViewLabel.textContent = isFree ? 'Free' : 'Grid';
+    notesViewIcon.innerHTML = isFree
+      ? '<rect x="3" y="4" width="9" height="9" rx="1"/><rect x="11" y="10" width="10" height="10" rx="1"/>'
+      : '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>';
+    autoArrangeBtn.classList.toggle('hidden', !(isFree && !isMobile()));
+  }
+  notesViewToggle.addEventListener('click', e => {
+    e.stopPropagation();
+    if (dirtyNotes.size) {
+      notes.forEach(n => { if (dirtyNotes.has(n.id)) n.updatedAt = new Date().toISOString(); });
+      saveNotes();
+      dirtyNotes.clear();
+    }
+
+    const goingToFree = notesViewMode === 'grid';
+
+    if (goingToFree) {
+      // Capture current grid positions & sizes so nothing visually changes
+      const grid = listNotesEl.querySelector('.notes-grid');
+      if (grid) {
+        const gr = grid.getBoundingClientRect();
+        let maxZ = 0;
+        notes.forEach(n => { if (typeof n.z === 'number' && n.z > maxZ) maxZ = n.z; });
+        grid.querySelectorAll('.note').forEach(el => {
+          const n = notes.find(x => x.id === el.dataset.id);
+          if (!n) return;
+          const r = el.getBoundingClientRect();
+          n.x = Math.round(r.left - gr.left);
+          n.y = Math.round(r.top - gr.top);
+          n.z = ++maxZ;
+          // Only fill in sizes that weren't already set
+          if (typeof n.customW !== 'number') n.customW = Math.round(r.width);
+          if (typeof n.customH !== 'number') n.customH = Math.round(r.height);
+        });
+        saveNotes();
+      }
+    }
+
+    notesViewMode = notesViewMode === 'free' ? 'grid' : 'free';
+    saveNotesViewMode();
+    updateNotesViewToggle();
+    renderNotes();
+    showToast(notesViewMode === 'free' ? 'Free canvas — drag to move, drag edges to resize' : 'Grid view');
+  });
+  autoArrangeBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    if (!notes.length) { showToast('No notes to arrange'); return; }
+    autoArrangeInternal();
+    renderNotes();
+    showToast('Notes auto-arranged (sizes reset)');
+  });
+
   function renderNotes(){
     countNotesEl.textContent=notes.length;
     const q=noteQuery.trim().toLowerCase();
@@ -1300,39 +1395,61 @@
       if(manualSortMode)return (a.order??0)-(b.order??0);
       return new Date(b.createdAt)-new Date(a.createdAt);
     });
+    const isFree = notesViewMode === 'free' && !isMobile();
+    lastEffectiveFreeMode = isFree;
+    updateNotesViewToggle();
+
+    if (isFree && notes.length > 0) {
+      const missingPos = notes.some(n => typeof n.x !== 'number' || typeof n.y !== 'number');
+      if (missingPos) autoArrangeInternal();
+    }
+
     if(!view.length){
-      listNotesEl.innerHTML=notes.length?'<div class="empty"><span class="big">🔍</span>No notes match "'+esc(noteQuery)+'".</div>':'<div class="empty"><span class="big">📝</span>No notes yet.<div class="hint">Click "Add note" or "Import .txt".<br>Drag a note edge to resize · ↙ resets size · 🎨 changes theme.</div><button id="emptyAddNote">'+SVG_PLUS+'Create first note</button></div>';
+      listNotesEl.innerHTML=notes.length?'<div class="empty"><span class="big">🔍</span>No notes match "'+esc(noteQuery)+'".</div>':'<div class="empty"><span class="big">📝</span>No notes yet.<div class="hint">Click "Add note" or "Import .txt".<br>Drag a note header to move · edges to resize · ↙ resets · 🎨 changes theme.</div><button id="emptyAddNote">'+SVG_PLUS+'Create first note</button></div>';
       const b=$('emptyAddNote');if(b)b.addEventListener('click',createNote);
       return;
     }
-    listNotesEl.innerHTML='<div class="notes-grid">'+view.map(renderNote).join('')+'</div>';
+    listNotesEl.innerHTML='<div class="'+(isFree?'notes-canvas':'notes-grid')+'">'+view.map(n=>renderNote(n,isFree)).join('')+'</div>';
+    if (isFree) expandCanvasHeight();
   }
-  function renderNote(n){
+  function renderNote(n,isFree){
     const isDirty=dirtyNotes.has(n.id);
     const h=noteFileHandles.get(n.id);
     const linked=!!h;
     const fn=linked?(h.name||'file'):'';
     const fontC='font-'+(n.font||'md');
     const isCollapsed=!!n.collapsed;
-    const isCustom=!isCollapsed&&(typeof n.customW==='number'||typeof n.customH==='number');
+    const hasSize = typeof n.customW === 'number' || typeof n.customH === 'number';
+    const isCustom = !isFree && !isCollapsed && hasSize && n.sizedByUser === true;
+    const showReset = isFree ? true : (hasSize && n.sizedByUser === true);
+	
+    let inlineStyle='';
+    if (isFree) {
+      const x = typeof n.x === 'number' ? n.x : 20;
+      const y = typeof n.y === 'number' ? n.y : 20;
+      const z = typeof n.z === 'number' ? n.z : 1;
+      inlineStyle = 'left:'+x+'px;top:'+y+'px;z-index:'+z+';';
+      if (typeof n.customW === 'number') inlineStyle += 'width:'+n.customW+'px;';
+      if (typeof n.customH === 'number') inlineStyle += 'height:'+n.customH+'px;';
+    } else if (isCustom) {
+      if (n.customW) inlineStyle += 'width:'+n.customW+'px;';
+      if (n.customH) inlineStyle += 'height:'+n.customH+'px;';
+      if (typeof n.customLeft === 'number' && n.customLeft > 0) inlineStyle += 'margin-left:'+n.customLeft+'px;';
+    }
+
     const st=linked?'Save to '+fn+' (Ctrl+S)':'Save — choose a location on disk (Ctrl+S)';
     const lk=linked?'<span class="note-link" title="Linked to '+esc(fn)+'">'+SVG_LINK+'</span>':'';
     const fm=linked?'<span class="meta-file" title="'+esc(fn)+'">· '+esc(fn)+'</span>':'';
-    let inlineStyle='';
-    if(isCustom){
-      if(n.customW)inlineStyle+='width:'+n.customW+'px;';
-      if(n.customH)inlineStyle+='height:'+n.customH+'px;';
-      if(typeof n.customLeft==='number'&&n.customLeft>0)inlineStyle+='margin-left:'+n.customLeft+'px;';
-    }
+
     return '<div class="note '+fontC+(n.pinned?' pinned':'')+(isDirty?' dirty':'')+(isCollapsed?' collapsed':'')+(isCustom?' custom-sized':'')+'" data-id="'+n.id+'" data-color="'+n.color+'"'+(inlineStyle?' style="'+inlineStyle+'"':'')+'>'+
-      '<div class="note-head" title="Drag empty space to reorder · drag edges to resize">'+
+      '<div class="note-head" title="Drag header to move · drag edges to resize">'+
         '<button class="note-ico note-collapse-btn" data-act="toggle-note-collapse" data-id="'+n.id+'" title="'+(isCollapsed?'Expand':'Collapse')+'">'+SVG_CHEV+'</button>'+
         '<button class="note-ico '+(n.pinned?'pin-on':'')+'" data-act="pin-note" data-id="'+n.id+'" title="'+(n.pinned?'Unpin':'Pin to top')+'">'+SVG_PIN+'</button>'+
         '<div class="note-title" contenteditable="true" data-id="'+n.id+'" data-placeholder="Note title…" spellcheck="false">'+esc(n.title)+'</div>'+
         '<div class="note-spacer"></div>'+
         '<button class="note-ico mini" data-act="font-down" data-id="'+n.id+'" title="Smaller text">A−</button>'+
         '<button class="note-ico mini" data-act="font-up" data-id="'+n.id+'" title="Larger text">A+</button>'+
-        (isCustom?'<button class="note-ico mini reset-size" data-act="reset-size" data-id="'+n.id+'" title="Reset size to default">'+SVG_SHRINK+'</button>':'')+
+        (showReset?'<button class="note-ico mini reset-size" data-act="reset-size" data-id="'+n.id+'" title="'+(isFree?'Reset size & position':'Reset size to default')+'">'+SVG_SHRINK+'</button>':'')+
         '<button class="note-ico mini" data-act="expand" data-id="'+n.id+'" title="Open fullscreen">⤢</button>'+
         lk+
         '<button class="note-save '+(isDirty?'dirty':'')+'" data-act="save-note" data-id="'+n.id+'" title="'+esc(st)+'">'+SVG_FLOPPY+'</button>'+
@@ -1355,7 +1472,9 @@
   }
   function createNote(){
     const id=uid();
-    notes.unshift({id,title:'',body:'',color:'',pinned:false,collapsed:false,font:'md',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});
+    const note={id,title:'',body:'',color:'',pinned:false,collapsed:false,font:'md',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};
+    initNewNotePosition(note);
+    notes.unshift(note);
     if(manualSortMode)notes.forEach((n,i)=>{n.order=i;});
     saveNotes();renderNotes();updateStats();checkPasswordBanner();
     setTimeout(()=>{const t=listNotesEl.querySelector('.note[data-id="'+id+'"] .note-title');if(t){t.focus();}},30);
@@ -1374,7 +1493,22 @@
   const NOTE_FONTS=['xs','sm','md','lg','xl','xxl','huge','mega'];
   function cycleNoteFont(id,dir){const n=notes.find(x=>x.id===id);if(!n)return;let i=NOTE_FONTS.indexOf(n.font||'md');if(i===-1)i=2;i=(i+dir+NOTE_FONTS.length)%NOTE_FONTS.length;n.font=NOTE_FONTS[i];n.updatedAt=new Date().toISOString();saveNotes();renderNotes();showToast('Text size: '+n.font.toUpperCase());}
   function toggleNoteCollapse(id){const n=notes.find(x=>x.id===id);if(!n)return;n.collapsed=!n.collapsed;saveNotes();renderNotes();}
-  function resetNoteSize(id){const n=notes.find(x=>x.id===id);if(!n)return;delete n.customW;delete n.customH;delete n.customLeft;n.updatedAt=new Date().toISOString();saveNotes();renderNotes();showToast('Size reset to default');}
+  function resetNoteSize(id){
+    const n=notes.find(x=>x.id===id);if(!n)return;
+    delete n.customW;delete n.customH;delete n.customLeft;
+    if (notesViewMode === 'free' && !isMobile()) {
+      let maxY = 20, maxZ = 0;
+      notes.forEach(x => {
+        if (x.id === id) return;
+        if (typeof x.y === 'number') maxY = Math.max(maxY, x.y + 30);
+        if (typeof x.z === 'number') maxZ = Math.max(maxZ, x.z);
+      });
+      n.x = 20; n.y = maxY; n.z = maxZ + 1;
+    }
+    n.updatedAt=new Date().toISOString();
+    saveNotes();renderNotes();
+    showToast('Reset to default');
+  }
 
   function onResizeStart(e,noteEl,dir){
     if(e.button!==0)return;
@@ -1382,7 +1516,7 @@
     e.preventDefault();e.stopPropagation();
     const n=notes.find(x=>x.id===noteEl.dataset.id);if(!n)return;
     const r=noteEl.getBoundingClientRect();
-    const grid=listNotesEl.querySelector('.notes-grid');if(!grid)return;
+    const grid=listNotesEl.querySelector('.notes-grid, .notes-canvas');if(!grid)return;
     const gr=grid.getBoundingClientRect();
     const cs=getComputedStyle(grid);
     const padL=parseFloat(cs.paddingLeft)||0;
@@ -1390,7 +1524,6 @@
     const contentLeft=gr.left+padL;
     const contentRight=gr.right-padR;
     resizeState={noteEl,id:n.id,dir,startX:e.clientX,startY:e.clientY,startLeft:r.left,startTop:r.top,startW:r.width,startH:r.height,minW:240,minH:140,maxW:1400,maxH:1200,contentLeft,contentRight};
-    // ---- FIX: apply custom-sized class immediately so textarea uncaps during drag ----
     noteEl.classList.add('custom-sized');
     noteEl.style.position='fixed';
     noteEl.style.left=Math.round(r.left)+'px';
@@ -1432,29 +1565,83 @@
     const s=resizeState;resizeState=null;
     const n=notes.find(x=>x.id===s.id);if(!n)return;
     const r=s.noteEl.getBoundingClientRect();
-    const grid=listNotesEl.querySelector('.notes-grid');let offLeft=0;
-    if(grid){const gr=grid.getBoundingClientRect();const cs=getComputedStyle(grid);const padL=parseFloat(cs.paddingLeft)||0;offLeft=Math.max(0,Math.round(r.left-(gr.left+padL)));}
+    const container=listNotesEl.querySelector('.notes-grid, .notes-canvas');
+    if (container) {
+      const cRect=container.getBoundingClientRect();
+      const cs=getComputedStyle(container);
+      const padL=parseFloat(cs.paddingLeft)||0;
+      const offLeft=Math.max(0,Math.round(r.left-(cRect.left+padL)));
+      if (notesViewMode === 'free' && !isMobile()) {
+        n.x=Math.round(r.left-cRect.left);
+        n.y=Math.round(r.top-cRect.top);
+        n.customW=Math.round(r.width);
+        n.customH=Math.round(r.height);
+        delete n.customLeft;
+        n.sizedByUser = true;
+      } else {
+        n.customW=Math.round(r.width);
+        n.customH=Math.round(r.height);
+        n.customLeft=offLeft;
+        n.sizedByUser = true;
+      }
+    }
     s.noteEl.style.position='';s.noteEl.style.left='';s.noteEl.style.top='';s.noteEl.style.width='';s.noteEl.style.height='';s.noteEl.style.margin='';s.noteEl.style.zIndex='';
     s.noteEl.classList.remove('resizing');
-    n.customW=Math.round(r.width);n.customH=Math.round(r.height);n.customLeft=offLeft;n.updatedAt=new Date().toISOString();
+    n.updatedAt=new Date().toISOString();
     saveNotes();renderNotes();
+  }
+
+  function clearNoteSelection(noteEl){
+    try{
+      if (document.activeElement && noteEl && noteEl.contains(document.activeElement)) {
+        document.activeElement.blur();
+      }
+      const sel = window.getSelection && window.getSelection();
+      if (sel) sel.removeAllRanges();
+    }catch(_){}
   }
 
   function onNotePointerDown(e){
     if(e.button!==0)return;
     if(e.target.closest('.nr'))return;
     const head=e.target.closest('.note-head');if(!head)return;
-    if(e.target.closest('button')||e.target.closest('input')||e.target.closest('.note-title')||e.target.closest('[contenteditable]'))return;
+    // Only exclude actual buttons/inputs — allow dragging from the title too.
+    if(e.target.closest('button')||e.target.closest('input'))return;
     const noteEl=head.closest('.note');if(!noteEl)return;
     if(noteEl.classList.contains('collapsed'))return;
+
+    const isFree = notesViewMode === 'free' && !isMobile();
+
+    if (isFree) {
+      bringToFront(noteEl.dataset.id);
+      const n = notes.find(x => x.id === noteEl.dataset.id);
+      if (!n) return;
+      const r = noteEl.getBoundingClientRect();
+      dragState = {
+        mode: 'free',
+        el: noteEl, id: noteEl.dataset.id,
+        startX: e.clientX, startY: e.clientY,
+        startLeft: typeof n.x === 'number' ? n.x : 20,
+        startTop: typeof n.y === 'number' ? n.y : 20,
+        currentX: typeof n.x === 'number' ? n.x : 20,
+        currentY: typeof n.y === 'number' ? n.y : 20,
+        w: r.width, h: r.height, active: false
+      };
+      window.addEventListener('pointermove', onNotePointerMove);
+      window.addEventListener('pointerup', onNotePointerUp, {once:true});
+      window.addEventListener('pointercancel', onNotePointerUp, {once:true});
+      return;
+    }
+
     const r=noteEl.getBoundingClientRect();
-    dragState={el:noteEl,id:noteEl.dataset.id,startX:e.clientX,startY:e.clientY,offsetX:e.clientX-r.left,offsetY:e.clientY-r.top,w:r.width,h:r.height,active:false,placeholder:null};
+    dragState={mode:'grid',el:noteEl,id:noteEl.dataset.id,startX:e.clientX,startY:e.clientY,offsetX:e.clientX-r.left,offsetY:e.clientY-r.top,w:r.width,h:r.height,active:false,placeholder:null};
     window.addEventListener('pointermove',onNotePointerMove);
     window.addEventListener('pointerup',onNotePointerUp,{once:true});
     window.addEventListener('pointercancel',onNotePointerUp,{once:true});
   }
   function activateNoteDrag(){
     const s=dragState;if(!s)return;s.active=true;
+    clearNoteSelection(s.el);
     const el=s.el,r=el.getBoundingClientRect();
     const ph=document.createElement('div');ph.className='note-placeholder';
     ph.style.width=r.width+'px';ph.style.height=r.height+'px';
@@ -1467,6 +1654,31 @@
   function onNotePointerMove(e){
     const s=dragState;if(!s)return;
     const dx=e.clientX-s.startX,dy=e.clientY-s.startY;
+
+    if (s.mode === 'free') {
+      if (!s.active && (Math.abs(dx) > 4 || Math.abs(dy) > 4)) {
+        s.active = true;
+        clearNoteSelection(s.el);
+        s.el.classList.add('dragging-note');
+        document.body.classList.add('dragging-active');
+      }
+      if (!s.active) return;
+      e.preventDefault();
+      const canvas = s.el.parentElement;
+      const cw = canvas.clientWidth;
+      const nw = s.el.offsetWidth;
+      const margin = 10;
+      let nx = s.startLeft + dx;
+      let ny = s.startTop + dy;
+      nx = Math.max(margin, Math.min(cw - nw - margin, nx));
+      ny = Math.max(margin, ny);
+      s.currentX = nx;
+      s.currentY = ny;
+      s.el.style.left = nx + 'px';
+      s.el.style.top = ny + 'px';
+      return;
+    }
+
     if(!s.active&&(Math.abs(dx)>6||Math.abs(dy)>6))activateNoteDrag();
     if(!s.active)return;
     e.preventDefault();
@@ -1488,6 +1700,23 @@
     window.removeEventListener('pointermove',onNotePointerMove);
     const s=dragState;if(!s)return;dragState=null;
     document.body.classList.remove('dragging-active');
+
+    if (s.mode === 'free') {
+      if (s.active) {
+        wasDrag = true;
+        const n = notes.find(x => x.id === s.id);
+        if (n) {
+          n.x = Math.round(s.currentX);
+          n.y = Math.round(s.currentY);
+          n.updatedAt = new Date().toISOString();
+          saveNotes();
+        }
+        s.el.classList.remove('dragging-note');
+        expandCanvasHeight();
+      }
+      return;
+    }
+
     const el=s.el,ph=s.placeholder;
     if(s.active&&ph){
       wasDrag=true;
@@ -1546,7 +1775,9 @@
     const f=await h.getFile();const txt=await f.text();
     const p=parseTxt(f.name,txt);const id=uid();
     noteFileHandles.set(id,h);await idbPutHandle(id,h);
-    notes.unshift({id,title:p.title,body:p.body,color:'',pinned:false,collapsed:false,font:'md',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});
+    const note={id,title:p.title,body:p.body,color:'',pinned:false,collapsed:false,font:'md',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};
+    initNewNotePosition(note);
+    notes.unshift(note);
     if(manualSortMode)notes.forEach((n,i)=>{n.order=i;});
     return{id,title:p.title};
   }
@@ -1565,7 +1796,7 @@
     let done=0,c=0;
     fs.forEach(f=>{
       const r=new FileReader();
-      r.onload=()=>{try{const p=parseTxt(f.name,r.result);notes.unshift({id:uid(),title:p.title,body:p.body,color:'',pinned:false,collapsed:false,font:'md',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});if(manualSortMode)notes.forEach((n,i)=>{n.order=i;});c++;}catch(e){}done++;if(done===fs.length){saveNotes();renderNotes();updateStats();checkPasswordBanner();showToast('Imported '+c+' note'+(c===1?'':'s')+' (not linked — browser can\'t write back)');}};
+      r.onload=()=>{try{const p=parseTxt(f.name,r.result);const note={id:uid(),title:p.title,body:p.body,color:'',pinned:false,collapsed:false,font:'md',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};initNewNotePosition(note);notes.unshift(note);if(manualSortMode)notes.forEach((n,i)=>{n.order=i;});c++;}catch(e){}done++;if(done===fs.length){saveNotes();renderNotes();updateStats();checkPasswordBanner();showToast('Imported '+c+' note'+(c===1?'':'s')+' (not linked — browser can\'t write back)');}};
       r.onerror=()=>{done++;if(done===fs.length){saveNotes();renderNotes();updateStats();showToast('Finished importing');}};
       r.readAsText(f);
     });
@@ -1619,6 +1850,13 @@
   listNotesEl.addEventListener('pointerdown',ev=>{
     const h=ev.target.closest('.nr');
     if(h){const noteEl=h.closest('.note');if(noteEl)onResizeStart(ev,noteEl,h.dataset.dir);return;}
+
+    // Bring to front in free mode (any click on the note)
+    if (notesViewMode === 'free' && !isMobile()) {
+      const noteEl = ev.target.closest('.note');
+      if (noteEl && noteEl.dataset.id) bringToFront(noteEl.dataset.id);
+    }
+
     onNotePointerDown(ev);
   });
   listNotesEl.addEventListener('click',async ev=>{
@@ -1656,7 +1894,7 @@
 
   $('exportAllBtn').addEventListener('click',()=>{
     if(dirtyNotes.size){notes.forEach(n=>{if(dirtyNotes.has(n.id))n.updatedAt=new Date().toISOString();});saveNotes();dirtyNotes.clear();renderNotes();}
-    const payload={app:'vm-credentials-manager',version:16,exportedAt:new Date().toISOString(),credentials:entries,serverGroups:groups,notes:notes};
+    const payload={app:'vm-credentials-manager',version:17,exportedAt:new Date().toISOString(),credentials:entries,serverGroups:groups,notes:notes,notesViewMode:notesViewMode};
     const b=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
     const a=document.createElement('a');a.href=URL.createObjectURL(b);
     const ts=new Date().toISOString().slice(0,19).replace(/[:T]/g,'-');
@@ -1687,7 +1925,8 @@
         else if(d&&typeof d==='object'){
           if(Array.isArray(d.credentials))nc=d.credentials.map(i=>({id:uid(),username:String(i.username||''),password:String(i.password||''),createdAt:i.createdAt||new Date().toISOString(),updatedAt:i.updatedAt||new Date().toISOString()}));
           if(Array.isArray(d.serverGroups))ng=d.serverGroups.map(g=>sanitizeGroup(g));
-          if(Array.isArray(d.notes))nn=d.notes.map(n=>({id:uid(),title:String(n.title||''),body:String(n.body||''),color:NOTE_THEMES.indexOf(n.color)!==-1?n.color:'',pinned:!!n.pinned,collapsed:!!n.collapsed,font:['xs','sm','md','lg','xl','xxl','huge','mega'].indexOf(n.font)!==-1?n.font:'md',customW:(typeof n.customW==='number')?Math.round(n.customW):undefined,customH:(typeof n.customH==='number')?Math.round(n.customH):undefined,customLeft:(typeof n.customLeft==='number')?Math.round(n.customLeft):undefined,order:typeof n.order==='number'?n.order:undefined,createdAt:n.createdAt||new Date().toISOString(),updatedAt:n.updatedAt||new Date().toISOString()}));
+          if(Array.isArray(d.notes))nn=d.notes.map(n=>({id:uid(),title:String(n.title||''),body:String(n.body||''),color:NOTE_THEMES.indexOf(n.color)!==-1?n.color:'',pinned:!!n.pinned,collapsed:!!n.collapsed,font:['xs','sm','md','lg','xl','xxl','huge','mega'].indexOf(n.font)!==-1?n.font:'md',customW:(typeof n.customW==='number')?Math.round(n.customW):undefined,customH:(typeof n.customH==='number')?Math.round(n.customH):undefined,customLeft:(typeof n.customLeft==='number')?Math.round(n.customLeft):undefined,x:(typeof n.x==='number')?Math.round(n.x):undefined,y:(typeof n.y==='number')?Math.round(n.y):undefined,z:(typeof n.z==='number')?Math.round(n.z):undefined,order:typeof n.order==='number'?n.order:undefined,createdAt:n.createdAt||new Date().toISOString(),updatedAt:n.updatedAt||new Date().toISOString()}));
+          if(d.notesViewMode==='free'||d.notesViewMode==='grid')notesViewMode=d.notesViewMode;
         } else throw new Error('Unrecognized file format');
         const have=entries.length||groups.length||notes.length;
         if(have){const m='This will REPLACE all current data.\n\nFile contains:\n• '+nc.length+' credential(s)\n• '+ng.length+' server group(s)\n• '+nn.length+' note(s)\n\nContinue?';if(!confirm(m)){importFile.value='';return;}}
@@ -1697,7 +1936,7 @@
         manualSortMode=nn.some(n=>typeof n.order==='number');
         if(manualSortMode)resetSortBtn.classList.remove('hidden');else resetSortBtn.classList.add('hidden');
         visiblePasswords.clear();activeTags.clear();dirtyNotes.clear();
-        saveCreds();saveGroups();saveNotes();
+        saveCreds();saveGroups();saveNotes();saveNotesViewMode();
         editingId=null;editingServer=null;editingGroupId=null;editingExtraId=null;addingToGroupId=null;
         renderCredentials();renderServers();renderNotes();updateStats();checkPasswordBanner();
         showToast('Imported '+nc.length+' cred, '+ng.length+' group(s), '+nn.length+' note(s)');
@@ -1726,6 +1965,20 @@
       try{localStorage.setItem(NOTES_KEY,JSON.stringify(notes));}catch(_){}
       e.preventDefault();e.returnValue='';return'';
     }
+  });
+
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeDebounceTimer);
+    resizeDebounceTimer = setTimeout(() => {
+      const effective = notesViewMode === 'free' && !isMobile();
+      if (effective !== lastEffectiveFreeMode) {
+        renderNotes();
+      } else if (effective) {
+        expandCanvasHeight();
+      } else {
+        updateNotesViewToggle();
+      }
+    }, 180);
   });
 
   function updateDate(){const n=new Date();const d=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];const m=['January','February','March','April','May','June','July','August','September','October','November','December'];const s=d[n.getDay()]+', '+String(n.getDate()).padStart(2,'0')+' '+m[n.getMonth()]+' '+n.getFullYear();const el=$('liveDate');if(el)el.textContent=s;}
