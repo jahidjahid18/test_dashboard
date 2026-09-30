@@ -204,7 +204,7 @@
   .pw-toggle svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   .edit-input{flex:1;min-width:0;background:var(--panel-2);border:1px solid var(--accent);border-radius:8px;color:var(--txt);padding:8px 12px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:16px;outline:none;box-shadow:0 0 0 3px rgba(91,149,255,.2)}
 
-  .sp-app-cell{font-weight:600;color:var(--txt);font-size:14.5px;overflow:hidden}
+  .sp-app-cell{font-weight:600;color:var(--txt);font-size:14.5px;overflow:visible;user-select:text;-webkit-user-select:text;padding-top:10px;padding-bottom:10px}
   .sp-app-cell.no-app .srv-app-name{color:var(--muted);font-style:italic;font-weight:600}
   .sp-tags-cell{overflow:hidden}
   .sp-tags-cell .tag{margin:2px 4px 2px 0}
@@ -215,8 +215,9 @@
   .srv-app-wrap{display:flex;flex-direction:row;align-items:flex-start;gap:8px}
   .srv-app-inner{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
   .srv-app-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .srv-note{font-size:12.5px;color:var(--muted);font-style:italic;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .srv-drag{display:inline-flex;align-items:center;justify-content:center;width:12px;height:20px;margin-right:-4px;color:var(--muted);opacity:.35;cursor:grab;transition:opacity .15s,color .15s}
+  .srv-note{font-size:12.5px;color:var(--muted);font-style:italic;white-space:normal;word-break:break-word;overflow:visible;user-select:text;-webkit-user-select:text;padding:2px 0 2px 8px;border-left:2px solid var(--line-soft);line-height:1.4;display:block}
+  .srv-app-inner .srv-note:first-of-type{margin-top:3px}
+  .srv-drag{display:inline-flex;align-items:center;justify-content:center;width:12px;height:20px;margin-right:-4px;color:var(--muted);opacity:.35;cursor:grab;transition:opacity .15s,color .15s;user-select:none;-webkit-user-select:none}
   .srv-drag svg{width:9px;height:14px;stroke:currentColor;fill:none;stroke-width:2.2}
   tbody tr:hover .srv-drag{opacity:.85;color:var(--accent-2)}
 
@@ -293,6 +294,12 @@
   .edit-row input{background:var(--panel-2);border:1px solid var(--accent);border-radius:8px;color:var(--txt);padding:8px 11px;font-size:14px;font-family:inherit;outline:none;box-shadow:0 0 0 3px rgba(91,149,255,.2);min-width:0}
   .edit-row input.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
   .edit-row .er-actions{display:inline-flex;gap:6px}
+  .edit-row textarea{
+    background:var(--panel-2);border:1px solid var(--accent);border-radius:8px;
+    color:var(--txt);padding:8px 11px;font-size:14px;font-family:inherit;outline:none;
+    box-shadow:0 0 0 3px rgba(91,149,255,.2);min-width:0;
+    resize:vertical;min-height:38px;max-height:120px;line-height:1.4;
+  }
 
   .group{border-bottom:1px solid var(--line-soft)}
   .group:last-child{border-bottom:none}
@@ -338,6 +345,14 @@
   .group-add button{padding:9px 16px;border-radius:9px;border:1px solid var(--line);background:var(--panel-2);color:var(--txt);font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:7px}
   .group-add button:hover{background:var(--panel);border-color:var(--accent)}
   .group-add button.primary{background:linear-gradient(180deg,#3ddc84,#25b86a);border-color:transparent;color:#04210f;box-shadow:0 6px 18px -10px rgba(61,220,132,.85)}
+  .group-add textarea{
+    flex:1;min-width:140px;background:var(--panel-2);border:1px solid var(--line);
+    border-radius:9px;color:var(--txt);padding:9px 13px;font-size:14.5px;
+    font-family:inherit;outline:none;resize:vertical;min-height:42px;max-height:120px;
+    line-height:1.4;transition:border-color .15s,box-shadow .15s;
+  }
+  .group-add textarea::placeholder{color:var(--muted);opacity:.75}
+  .group-add textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(91,149,255,.2)}
   .group-empty{padding:14px 20px;text-align:center;color:var(--muted);font-size:13.5px}
   .empty{text-align:center;padding:52px 20px;color:var(--muted);font-size:15px}
   .empty .big{font-size:34px;display:block;margin-bottom:12px;opacity:.6}
@@ -524,10 +539,6 @@
 
   #autoSaveToggle.active{border-color:var(--accent);color:var(--accent-2);background:rgba(91,149,255,.16)}
   #autoSaveToggle.active svg{stroke:var(--accent-2)}
-
-  /* ============================================================
-     SMOOTHNESS BUNDLE
-     ============================================================ */
 
   button:focus, input:focus, textarea:focus, select:focus, a:focus{outline:none}
   button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, a:focus-visible{
@@ -939,7 +950,6 @@
 
   const NOTE_THEMES = ['','yellow','red','green','blue','net','sky','sun','moon','star','aurora','mint','rose'];
 
-  // Smoothness: track last pointer position + show a floating copy chip
   const _lastPointer = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
   document.addEventListener('pointerdown', e => {
     _lastPointer.x = e.clientX;
@@ -1401,7 +1411,27 @@
     try{autoSaveNotesEnabled=localStorage.getItem(AUTOSAVE_NOTES_KEY)==='1';}catch(e){}
   }
 
-  function sanitizeGroup(g){return{id:g.id||uid(),name:String(g.name||'Untitled group'),collapsed:!!g.collapsed,extra:String(g.extra||''),servers:Array.isArray(g.servers)?g.servers.map(s=>({id:s.id||uid(),app:String(s.app||''),host:String(s.host||''),note:String(s.note||''),tags:Array.isArray(s.tags)?s.tags.map(t=>String(t).trim().toLowerCase()).filter(Boolean):[],addedAt:s.addedAt||new Date().toISOString()})).filter(s=>s.host):[]};}
+  function sanitizeGroup(g){
+    return {
+      id:g.id||uid(),
+      name:String(g.name||'Untitled group'),
+      collapsed:!!g.collapsed,
+      extra:String(g.extra||''),
+      servers:Array.isArray(g.servers)?g.servers.map(s=>{
+        let notesArr=[];
+        if(Array.isArray(s.notes))notesArr=s.notes.map(x=>String(x).trim()).filter(Boolean);
+        else if(typeof s.note==='string'&&s.note.trim())notesArr=[s.note.trim()];
+        return{
+          id:s.id||uid(),
+          app:String(s.app||''),
+          host:String(s.host||''),
+          notes:notesArr,
+          tags:Array.isArray(s.tags)?s.tags.map(t=>String(t).trim().toLowerCase()).filter(Boolean):[],
+          addedAt:s.addedAt||new Date().toISOString()
+        };
+      }).filter(s=>s.host):[]
+    };
+  }
   function sanitizeNote(n){
     return {
       id:n.id||uid(), title:String(n.title||''), body:String(n.body||''),
@@ -1429,7 +1459,7 @@
     if(!groups.length){
       const old=await readStore(OLD_KEY, null);
       if(Array.isArray(old)&&old.length){
-        groups=[{id:uid(),name:'Default',collapsed:false,extra:'',servers:old.map(s=>({id:s.id||uid(),app:String(s.app||''),host:String(s.host||s.name||''),note:'',tags:[],addedAt:s.addedAt||new Date().toISOString()})).filter(s=>s.host)}];
+        groups=[{id:uid(),name:'Default',collapsed:false,extra:'',servers:old.map(s=>({id:s.id||uid(),app:String(s.app||''),host:String(s.host||s.name||''),notes:[],tags:[],addedAt:s.addedAt||new Date().toISOString()})).filter(s=>s.host)}];
         saveGroups();
       }
     }
@@ -1580,7 +1610,7 @@
       view=groups.map(g=>{
         const nameHit=!q||(g.name||'').toLowerCase().includes(q);
         let ss=g.servers;
-        if(q)ss=nameHit?ss:ss.filter(s=>(s.host||'').toLowerCase().includes(q)||(s.app||'').toLowerCase().includes(q));
+        if(q)ss=nameHit?ss:ss.filter(s=>(s.host||'').toLowerCase().includes(q)||(s.app||'').toLowerCase().includes(q)||(s.notes||[]).some(n=>n.toLowerCase().includes(q)));
         if(activeTags.size>0)ss=ss.filter(s=>Array.isArray(s.tags)&&s.tags.some(t=>activeTags.has(t.toLowerCase())));
         return Object.assign({},g,{servers:ss,_open:!nameHit&&ss.length>0});
       }).filter(g=>g._open||((!q||(g.name||'').toLowerCase().includes(q))&&g.servers.length>0));
@@ -1600,7 +1630,7 @@
     else if(!g.extra)ex=`<div class="group-extra"><span class="extra-chip empty" data-act="edit-extra" data-id="${g.id}" title="Add a file or folder path">${SVG_PLUS}path</span></div>`;
     else{const isF=looksLikeFile(g.extra);ex=`<div class="group-extra"><span class="extra-chip" data-act="open-extra" data-id="${g.id}" title="Click to copy path · ${esc(g.extra)}">${isF?SVG_FILE:SVG_FOLDER}${esc(g.extra)}</span><button class="extra-edit" data-act="edit-extra" data-id="${g.id}" title="Edit path">${SVG_PENCIL}</button></div>`;}
     const head=`<div class="group-head" data-group="${g.id}"><button class="group-toggle" data-act="toggle-group" data-id="${g.id}" title="Expand/collapse"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>${isEN?`<input class="group-name-input" data-id="${g.id}" type="text" value="${esc(g.name)}" placeholder="Group name" autocomplete="off">`:`<span class="group-name" title="${esc(g.name)}">${esc(g.name)}</span>`}<span class="group-count">${g.servers.length}</span>${ex}<div class="group-spacer"></div><div class="group-actions"><button class="sp-ico copyall" data-act="copy-group-hosts" data-id="${g.id}" title="Copy all hosts">${SVG_CLIPLIST}</button><button class="sp-ico add" data-act="add-server-to-group" data-id="${g.id}" title="Add server">${SVG_PLUS}</button>${isEN?`<button class="sp-ico save" data-act="save-group-name" data-id="${g.id}" title="Save">${SVG_SAVE}</button><button class="sp-ico cancel" data-act="cancel-group-name" data-id="${g.id}" title="Cancel">${SVG_X}</button>`:`<button class="sp-ico edit" data-act="edit-group-name" data-id="${g.id}" title="Rename">${SVG_PENCIL}</button><button class="sp-ico del" data-act="delete-group" data-id="${g.id}" title="Delete">${SVG_TRASH}</button>`}</div></div>`;
-    const add=isAH?`<div class="group-add"><input class="add-app" data-id="${g.id}" placeholder="App name" autocomplete="off"><input class="add-host mono" data-id="${g.id}" placeholder="Server (IP / hostname)" autocomplete="off" spellcheck="false"><input class="add-note" data-id="${g.id}" placeholder="Note (optional)" autocomplete="off"><input class="add-tags" data-id="${g.id}" placeholder="Tags: prod, dc1" autocomplete="off"><button class="primary" data-act="commit-server" data-id="${g.id}">${SVG_SAVE}Add</button><button data-act="cancel-add-server" data-id="${g.id}">Cancel</button></div>`:'';
+    const add=isAH?`<div class="group-add"><input class="add-app" data-id="${g.id}" placeholder="App name" autocomplete="off"><input class="add-host mono" data-id="${g.id}" placeholder="Server (IP / hostname)" autocomplete="off" spellcheck="false"><textarea class="add-note" data-id="${g.id}" placeholder="Notes — one per line (optional)" rows="1"></textarea><input class="add-tags" data-id="${g.id}" placeholder="Tags: prod, dc1" autocomplete="off"><button class="primary" data-act="commit-server" data-id="${g.id}">${SVG_SAVE}Add</button><button data-act="cancel-add-server" data-id="${g.id}">Cancel</button></div>`:'';
     let tbl='';
     if(!g.servers.length)tbl='<div class="group-empty">No servers in this group yet.</div>';
     else tbl=`<table><thead><tr><th style="width:32%">App / Note</th><th style="width:18%">Tags</th><th style="width:30%">Server</th><th class="col-actions" style="width:20%">Actions</th></tr></thead><tbody>${g.servers.map(s=>renderServerRow(g.id,s)).join('')}</tbody></table>`;
@@ -1608,15 +1638,16 @@
   }
   function renderServerRow(gid,s){
     const isE=editingServer&&editingServer.groupId===gid&&editingServer.serverId===s.id;
-    if(isE)return `<tr data-group="${gid}" data-id="${s.id}" class="editing-row"><td colspan="4"><div class="edit-row"><input class="edit-app" type="text" value="${esc(s.app)}" placeholder="App name" autocomplete="off"><input class="edit-host mono" type="text" value="${esc(s.host)}" placeholder="Server" autocomplete="off" spellcheck="false"><input class="edit-note" type="text" value="${esc(s.note||'')}" placeholder="Note" autocomplete="off"><input class="edit-tags" type="text" value="${esc((s.tags||[]).join(', '))}" placeholder="Tags (comma-separated)" autocomplete="off"><div class="er-actions"><button class="sp-ico save" data-act="save-server" data-id="${s.id}" data-group="${gid}" title="Save">${SVG_SAVE}</button><button class="sp-ico cancel" data-act="cancel-server" data-id="${s.id}" data-group="${gid}" title="Cancel">${SVG_X}</button></div></div></td></tr>`;
+    if(isE)return `<tr data-group="${gid}" data-id="${s.id}" class="editing-row"><td colspan="4"><div class="edit-row"><input class="edit-app" type="text" value="${esc(s.app)}" placeholder="App name" autocomplete="off"><input class="edit-host mono" type="text" value="${esc(s.host)}" placeholder="Server" autocomplete="off" spellcheck="false"><textarea class="edit-note" placeholder="Notes (one per line)" rows="2">${esc((s.notes||[]).join('\n'))}</textarea><input class="edit-tags" type="text" value="${esc((s.tags||[]).join(', '))}" placeholder="Tags (comma-separated)" autocomplete="off"><div class="er-actions"><button class="sp-ico save" data-act="save-server" data-id="${s.id}" data-group="${gid}" title="Save (Ctrl+Enter)">${SVG_SAVE}</button><button class="sp-ico cancel" data-act="cancel-server" data-id="${s.id}" data-group="${gid}" title="Cancel">${SVG_X}</button></div></div></td></tr>`;
     const tagsHtml=(s.tags||[]).map(t=>`<span class="tag ${tagClass(t)} ${activeTags.has(t)?'active':''}" data-act="filter-tag" data-tag="${esc(t)}" title="Filter by ${esc(t)}">${esc(t)}</span>`).join('');
-    return `<tr data-group="${gid}" data-id="${s.id}" draggable="true">
+    const notesHtml=(s.notes||[]).map(n=>`<span class="srv-note" title="${esc(n)}">${esc(n)}</span>`).join('');
+    return `<tr data-group="${gid}" data-id="${s.id}">
       <td class="sp-app-cell ${s.app?'':'no-app'}">
         <div class="srv-app-wrap">
-          <span class="srv-drag" title="Drag to move to another group">${SVG_GRIP}</span>
+          <span class="srv-drag" draggable="true" title="Drag to move to another group">${SVG_GRIP}</span>
           <div class="srv-app-inner">
             <span class="srv-app-name" title="${esc(s.app||'')}">${s.app?esc(s.app):'(no app name)'}</span>
-            ${s.note?`<span class="srv-note" title="${esc(s.note)}">${esc(s.note)}</span>`:''}
+            ${notesHtml}
           </div>
         </div>
       </td>
@@ -1653,10 +1684,40 @@
   async function openExtra(id){const g=findGroup(id);if(!g||!g.extra)return;const p=g.extra;const c=await copyText(p,null);if(c)showToast('Path copied: '+p+' — paste in Explorer (Win+E → Ctrl+L)');else showToast('Could not copy — copy manually');}
   function startAddServer(gid){const g=findGroup(gid);if(!g)return;g.collapsed=false;saveGroups();addingToGroupId=gid;editingServer=null;editingGroupId=null;editingExtraId=null;renderServers();}
   function cancelAddServer(){addingToGroupId=null;renderServers();}
-  function commitAddServer(gid){const g=findGroup(gid);if(!g)return;const ai=listServers.querySelector('.group-add .add-app[data-id="'+gid+'"]'),hi=listServers.querySelector('.group-add .add-host[data-id="'+gid+'"]'),ni=listServers.querySelector('.group-add .add-note[data-id="'+gid+'"]'),ti=listServers.querySelector('.group-add .add-tags[data-id="'+gid+'"]');const a=ai?ai.value.trim():'',h=hi?hi.value.trim():'',n=ni?ni.value.trim():'',t=ti?parseTags(ti.value):[];if(!h){hi&&hi.focus();return;}if(groups.some(gr=>gr.servers.some(s=>s.host.toLowerCase()===h.toLowerCase()))){showToast('That server is already in the list');hi&&hi.select();return;}g.servers.push({id:uid(),app:a,host:h,note:n,tags:t,addedAt:new Date().toISOString()});saveGroups();if(ai)ai.value='';if(hi)hi.value='';if(ni)ni.value='';if(ti)ti.value='';renderServers();const na=listServers.querySelector('.group-add .add-app[data-id="'+gid+'"]');if(na)na.focus();updateStats();showToast('Server added');}
+  function commitAddServer(gid){
+    const g=findGroup(gid);if(!g)return;
+    const ai=listServers.querySelector('.group-add .add-app[data-id="'+gid+'"]'),
+          hi=listServers.querySelector('.group-add .add-host[data-id="'+gid+'"]'),
+          ni=listServers.querySelector('.group-add .add-note[data-id="'+gid+'"]'),
+          ti=listServers.querySelector('.group-add .add-tags[data-id="'+gid+'"]');
+    const a=ai?ai.value.trim():'',h=hi?hi.value.trim():'';
+    const rawNotes=ni?ni.value:'';
+    const t=ti?parseTags(ti.value):[];
+    const notesArr=rawNotes.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+    if(!h){hi&&hi.focus();return;}
+    if(groups.some(gr=>gr.servers.some(s=>s.host.toLowerCase()===h.toLowerCase()))){showToast('That server is already in the list');hi&&hi.select();return;}
+    g.servers.push({id:uid(),app:a,host:h,notes:notesArr,tags:t,addedAt:new Date().toISOString()});
+    saveGroups();
+    if(ai)ai.value='';if(hi)hi.value='';if(ni)ni.value='';if(ti)ti.value='';
+    renderServers();
+    const na=listServers.querySelector('.group-add .add-app[data-id="'+gid+'"]');if(na)na.focus();
+    updateStats();showToast('Server added');
+  }
   function startServerEdit(gid,sid){editingServer={groupId:gid,serverId:sid};addingToGroupId=null;editingExtraId=null;renderServers();}
   function cancelServerEdit(){editingServer=null;renderServers();}
-  function saveServerEdit(gid,sid){const r=listServers.querySelector('tr[data-group="'+gid+'"][data-id="'+sid+'"]');if(!r){editingServer=null;renderServers();return;}const ai=r.querySelector('.edit-app'),hi=r.querySelector('.edit-host'),ni=r.querySelector('.edit-note'),ti=r.querySelector('.edit-tags');const s=findServer(gid,sid);if(!s){editingServer=null;renderServers();return;}const na=ai?ai.value.trim():'',nh=hi?hi.value.trim():'',nn=ni?ni.value.trim():'',nt=ti?parseTags(ti.value):[];if(!nh){hi&&hi.focus();return;}if(groups.some(gr=>gr.servers.some(x=>x.id!==sid&&x.host.toLowerCase()===nh.toLowerCase()))){showToast('That server is already in the list');hi&&hi.select();return;}s.app=na;s.host=nh;s.note=nn;s.tags=nt;editingServer=null;saveGroups();renderServers();showToast('Saved');}
+  function saveServerEdit(gid,sid){
+    const r=listServers.querySelector('tr[data-group="'+gid+'"][data-id="'+sid+'"]');if(!r){editingServer=null;renderServers();return;}
+    const ai=r.querySelector('.edit-app'),hi=r.querySelector('.edit-host'),ni=r.querySelector('.edit-note'),ti=r.querySelector('.edit-tags');
+    const s=findServer(gid,sid);if(!s){editingServer=null;renderServers();return;}
+    const na=ai?ai.value.trim():'',nh=hi?hi.value.trim():'';
+    const rawNotes=ni?ni.value:'';
+    const nt=ti?parseTags(ti.value):[];
+    const notesArr=rawNotes.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+    if(!nh){hi&&hi.focus();return;}
+    if(groups.some(gr=>gr.servers.some(x=>x.id!==sid&&x.host.toLowerCase()===nh.toLowerCase()))){showToast('That server is already in the list');hi&&hi.select();return;}
+    s.app=na;s.host=nh;s.notes=notesArr;s.tags=nt;editingServer=null;
+    saveGroups();renderServers();showToast('Saved');
+  }
   function deleteServer(gid,sid){
     const g=findGroup(gid);if(!g)return;
     const idx=g.servers.findIndex(x=>x.id===sid);if(idx===-1)return;
@@ -1670,7 +1731,15 @@
   async function copyGroupHosts(gid){const g=findGroup(gid);if(!g)return;if(!g.servers.length){showToast('This group is empty');return;}const t=g.servers.map(s=>s.host).join('\n');const ok=await copyText(t,null);if(ok)showToast('Copied '+g.servers.length+' host'+(g.servers.length===1?'':'s'));}
   function filterByTag(tag){const t=String(tag).toLowerCase();if(activeTags.has(t))activeTags.delete(t);else activeTags.add(t);renderServers();}
 
-  listServers.addEventListener('dragstart',ev=>{const tr=ev.target.closest('tr[draggable="true"]');if(!tr)return;draggedServer={groupId:tr.dataset.group,serverId:tr.dataset.id};tr.classList.add('dragging');try{ev.dataTransfer.effectAllowed='move';ev.dataTransfer.setData('text/plain',tr.dataset.id);}catch(e){}});
+  listServers.addEventListener('dragstart',ev=>{
+    const grip=ev.target.closest('.srv-drag');
+    if(!grip)return;
+    const tr=grip.closest('tr[data-id]');
+    if(!tr||!tr.dataset.group)return;
+    draggedServer={groupId:tr.dataset.group,serverId:tr.dataset.id};
+    tr.classList.add('dragging');
+    try{ev.dataTransfer.effectAllowed='move';ev.dataTransfer.setData('text/plain',tr.dataset.id);}catch(e){}
+  });
   listServers.addEventListener('dragend',ev=>{const tr=ev.target.closest('tr');if(tr)tr.classList.remove('dragging');listServers.querySelectorAll('.group-head.drag-over').forEach(h=>h.classList.remove('drag-over'));draggedServer=null;});
   listServers.addEventListener('dragover',ev=>{const h=ev.target.closest('.group-head');if(!h||!draggedServer)return;ev.preventDefault();listServers.querySelectorAll('.group-head.drag-over').forEach(x=>x.classList.remove('drag-over'));h.classList.add('drag-over');});
   listServers.addEventListener('dragleave',ev=>{const h=ev.target.closest('.group-head');if(h)h.classList.remove('drag-over');});
@@ -1686,11 +1755,30 @@
 
   listServers.addEventListener('click',ev=>{
     const head=ev.target.closest('.group-head');
-    if(head&&!ev.target.closest('button')&&!ev.target.closest('input')&&!ev.target.closest('[data-act]')){toggleGroup(head.dataset.group);return;}
+    if(head&&!ev.target.closest('button')&&!ev.target.closest('input')&&!ev.target.closest('textarea')&&!ev.target.closest('[data-act]')){toggleGroup(head.dataset.group);return;}
     const el=ev.target.closest('[data-act]');if(!el)return;const a=el.dataset.act,id=el.dataset.id,gid=el.dataset.group||id;
     switch(a){case'toggle-group':toggleGroup(id);break;case'edit-group-name':startGroupRename(id);break;case'cancel-group-name':cancelGroupRename();break;case'save-group-name':saveGroupRename(id);break;case'delete-group':deleteGroup(id);break;case'open-extra':openExtra(id);break;case'edit-extra':startExtraEdit(id);break;case'add-server-to-group':startAddServer(gid);break;case'cancel-add-server':cancelAddServer();break;case'commit-server':commitAddServer(gid);break;case'edit-server':startServerEdit(gid,id);break;case'cancel-server':cancelServerEdit();break;case'save-server':saveServerEdit(gid,id);break;case'delete-server':deleteServer(gid,id);break;case'copy-server':copyServer(gid,id);break;case'copy-group-hosts':copyGroupHosts(id);break;case'quick-menu':openQuickMenu(el,gid,findServer(gid,id));break;case'filter-tag':filterByTag(el.dataset.tag);break;}
   });
-  listServers.addEventListener('keydown',ev=>{const t=ev.target;if(t.classList.contains('group-name-input')){const id=t.dataset.id;if(ev.key==='Enter'){ev.preventDefault();saveGroupRename(id);}if(ev.key==='Escape'){ev.preventDefault();cancelGroupRename();}return;}if(t.classList.contains('extra-input')){const id=t.dataset.id;if(ev.key==='Enter'){ev.preventDefault();saveExtraEdit(id);}if(ev.key==='Escape'){ev.preventDefault();cancelExtraEdit();}return;}if(t.classList.contains('edit-app')||t.classList.contains('edit-host')||t.classList.contains('edit-note')||t.classList.contains('edit-tags')){const r=t.closest('tr[data-id]');if(!r)return;if(ev.key==='Enter'){ev.preventDefault();saveServerEdit(r.dataset.group,r.dataset.id);}if(ev.key==='Escape'){ev.preventDefault();cancelServerEdit();}return;}if(t.classList.contains('add-app')){if(ev.key==='Enter'){ev.preventDefault();const hi=listServers.querySelector('.group-add .add-host[data-id="'+t.dataset.id+'"]');if(hi)hi.focus();}return;}if(t.classList.contains('add-host')){if(ev.key==='Enter'){ev.preventDefault();commitAddServer(t.dataset.id);}}});
+  listServers.addEventListener('keydown',ev=>{
+    const t=ev.target;
+    if(t.classList.contains('group-name-input')){const id=t.dataset.id;if(ev.key==='Enter'){ev.preventDefault();saveGroupRename(id);}if(ev.key==='Escape'){ev.preventDefault();cancelGroupRename();}return;}
+    if(t.classList.contains('extra-input')){const id=t.dataset.id;if(ev.key==='Enter'){ev.preventDefault();saveExtraEdit(id);}if(ev.key==='Escape'){ev.preventDefault();cancelExtraEdit();}return;}
+    if(t.classList.contains('edit-app')||t.classList.contains('edit-host')||t.classList.contains('edit-tags')){
+      const r=t.closest('tr[data-id]');if(!r)return;
+      if(ev.key==='Enter'){ev.preventDefault();saveServerEdit(r.dataset.group,r.dataset.id);}
+      if(ev.key==='Escape'){ev.preventDefault();cancelServerEdit();}
+      return;
+    }
+    if(t.classList.contains('edit-note')){
+      const r=t.closest('tr[data-id]');if(!r)return;
+      if(ev.key==='Escape'){ev.preventDefault();cancelServerEdit();return;}
+      if(ev.key==='Enter'&&(ev.ctrlKey||ev.metaKey)){ev.preventDefault();saveServerEdit(r.dataset.group,r.dataset.id);}
+      return;
+    }
+    if(t.classList.contains('add-app')){if(ev.key==='Enter'){ev.preventDefault();const hi=listServers.querySelector('.group-add .add-host[data-id="'+t.dataset.id+'"]');if(hi)hi.focus();}return;}
+    if(t.classList.contains('add-host')){if(ev.key==='Enter'){ev.preventDefault();const ni=listServers.querySelector('.group-add .add-note[data-id="'+t.dataset.id+'"]');if(ni)ni.focus();else commitAddServer(t.dataset.id);}return;}
+    if(t.classList.contains('add-note')){if(ev.key==='Enter'&&(ev.ctrlKey||ev.metaKey)){ev.preventDefault();commitAddServer(t.dataset.id);}return;}
+  });
   addGroupForm.addEventListener('submit',ev=>{ev.preventDefault();const n=newGroupName.value.trim();if(!n){newGroupName.focus();return;}createGroup(n);newGroupName.value='';newGroupName.focus();});
 
   function markDirty(id){dirtyNotes.add(id);const el=listNotesEl.querySelector('.note[data-id="'+id+'"]');if(!el)return;el.classList.add('dirty');const b=el.querySelector('.note-save');if(b)b.classList.add('dirty');const s=el.querySelector('.meta-status');if(s)s.textContent='Unsaved changes';}
@@ -2331,7 +2419,7 @@
 
   $('exportAllBtn').addEventListener('click',()=>{
     if(dirtyNotes.size){notes.forEach(n=>{if(dirtyNotes.has(n.id))n.updatedAt=new Date().toISOString();});saveNotes();dirtyNotes.clear();renderNotes();}
-    const payload={app:'vm-credentials-manager',version:22,exportedAt:new Date().toISOString(),credentials:entries,serverGroups:groups,notes:notes,notesViewMode:notesViewMode};
+    const payload={app:'vm-credentials-manager',version:23,exportedAt:new Date().toISOString(),credentials:entries,serverGroups:groups,notes:notes,notesViewMode:notesViewMode};
     const b=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
     const a=document.createElement('a');a.href=URL.createObjectURL(b);
     const ts=new Date().toISOString().slice(0,19).replace(/[:T]/g,'-');
@@ -2340,8 +2428,8 @@
   });
   $('exportCsvBtn').addEventListener('click',()=>{
     if(!groups.length){showToast('No servers to export');return;}
-    const rows=[['Group','App','Host','Note','Tags','Added']];
-    groups.forEach(g=>{g.servers.forEach(s=>{rows.push([g.name,s.app||'',s.host||'',s.note||'',(s.tags||[]).join(' '),(s.addedAt||'').slice(0,10)]);});});
+    const rows=[['Group','App','Host','Notes','Tags','Added']];
+    groups.forEach(g=>{g.servers.forEach(s=>{rows.push([g.name,s.app||'',s.host||'',(s.notes||[]).join(' | '),(s.tags||[]).join(' '),(s.addedAt||'').slice(0,10)]);});});
     const csv=rows.map(r=>r.map(csvEsc).join(',')).join('\r\n');
     const b=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
     const a=document.createElement('a');a.href=URL.createObjectURL(b);
