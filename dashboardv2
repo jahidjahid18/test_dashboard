@@ -1672,7 +1672,7 @@
     }
     const unc='\\\\'+server+'\\'+share;
     const pw='"'+String(mapCred.password||'').replace(/"/g,'""')+'"';
-    return 'net use '+letter.toUpperCase()+': '+unc+' '+pw+' /user:'+mapCred.username+' /persistent:no';
+    return 'net use '+letter.toUpperCase()+': '+unc+' '+pw+' /user:'+mapCred.username+' /persistent:no && explorer '+letter.toUpperCase()+':';
   }
   function mapRefresh(){
     const cmd=mapBuildCmd();
