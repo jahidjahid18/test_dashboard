@@ -84,7 +84,15 @@
   .sort-opt.active .name .desc{color:var(--accent-2);opacity:.85}
   .sort-opt .check{margin-left:auto;color:var(--accent-2);opacity:0;transition:.15s;width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.6;align-self:flex-start;padding-top:3px;flex:none}
   .sort-opt.active .check{opacity:1}
-  #notesViewMenu{min-width:260px}
+
+  /* ---- Segmented view control (Single / Multi) ---- */
+  .view-seg{display:inline-flex;height:34px;border:1px solid var(--line);border-radius:9px;background:var(--panel-2);overflow:hidden;flex:none}
+  .view-seg-btn{display:inline-flex;align-items:center;gap:6px;padding:0 12px;border:none;background:transparent;color:var(--muted);font-family:inherit;font-size:12.5px;font-weight:700;letter-spacing:.3px;cursor:pointer;transition:background .15s,color .15s}
+  .view-seg-btn + .view-seg-btn{border-left:1px solid var(--line)}
+  .view-seg-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;flex:none}
+  .view-seg-btn:hover{color:var(--accent-2);background:rgba(91,149,255,.08)}
+  .view-seg-btn.active{color:#fff;background:linear-gradient(180deg,var(--accent),#3d7bf0)}
+  .view-seg-btn.active:hover{filter:brightness(1.05);color:#fff}
 
   @keyframes cardEnter{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
   body.app-ready #cardCredentials,body.app-ready #cardServers,body.app-ready #notesCard{animation:cardEnter .5s cubic-bezier(.2,.9,.3,1) backwards}
@@ -263,6 +271,16 @@
   .status.recent .dot{background:var(--muted)}
   .status.stale{color:var(--warn);background:rgba(255,204,0,.14);border:1px solid rgba(255,204,0,.45)}
   .status.stale .dot{background:var(--warn);box-shadow:0 0 0 3px rgba(255,204,0,.2)}
+
+  /* ---- Password age battery (8h) ---- */
+  .pwd-battery{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+  .pwd-battery-track{position:relative;display:inline-block;width:80px;height:10px;border-radius:5px;background:#e04343;overflow:hidden;box-shadow:inset 0 1px 2px rgba(0,0,0,.25)}
+  .pwd-battery-fill{position:absolute;top:0;left:0;height:100%;border-radius:5px;transition:width .45s ease,background .45s ease}
+  .pwd-battery-text{color:var(--muted);font-weight:700;font-size:11.5px;letter-spacing:.2px}
+  .pwd-battery.expired .pwd-battery-text{color:var(--bad);font-weight:800;letter-spacing:.3px}
+  .pwd-battery.expired::before{content:'⚠';color:var(--bad);font-size:12px;font-weight:900;margin-right:1px}
+  .pwd-battery.empty .pwd-battery-text{opacity:.6;font-style:italic}
+
   td.actions-cell{text-align:right;white-space:nowrap}
   .actions{display:inline-flex;gap:6px;justify-content:flex-end;flex-wrap:nowrap;max-width:100%;align-items:center}
   button.act{font-family:inherit;font-size:13px;font-weight:600;padding:7px 11px;border-radius:8px;border:1px solid var(--line);background:var(--panel-2);color:var(--txt);cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;flex:none}
@@ -589,7 +607,8 @@
   .group-add button:active,
   .add-form button:active,
   .pw-toggle:active,
-  .extra-edit:active{
+  .extra-edit:active,
+  .view-seg-btn:active{
     transform:scale(.955);
     transition:transform .08s cubic-bezier(.2,.9,.3,1);
   }
@@ -678,7 +697,7 @@
     .note-modal-card{height:95vh;max-width:none}
     .security-card{padding:28px 22px 22px}
     .tag-filter-dropdown{right:auto;left:0;min-width:220px;max-width:calc(100vw - 60px)}
-    #notesViewToggle,#autoArrangeBtn,#autoSaveToggle{display:none!important}
+    #notesViewSeg,#autoArrangeBtn,#autoSaveToggle{display:none!important}
     .map-pop{min-width:0;width:calc(100vw - 32px)}
   }
 
@@ -974,29 +993,15 @@
         <span class="count notes" id="countNotes">0</span>
       </div>
       <div class="card-head-right">
-        <div class="sort-wrap">
-          <button class="sort-btn" id="notesViewToggle" title="Change notes view">
-            <svg viewBox="0 0 24 24" id="notesViewIcon"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-            <span id="notesViewLabel">Grid</span>
+        <div class="view-seg" id="notesViewSeg">
+          <button type="button" class="view-seg-btn" data-view="single" title="Single note — one at a time">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="4" rx="1"/><rect x="3" y="11" width="18" height="10" rx="1"/></svg>
+            <span>Single</span>
           </button>
-          <div class="sort-menu hidden" id="notesViewMenu">
-            <button class="sort-opt" data-view="single">
-              <span class="s-ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="4" rx="1"/><rect x="3" y="11" width="18" height="10" rx="1"/></svg></span>
-              <span class="name">
-                <span class="label">Single note</span>
-                <span class="desc">One note at a time — switch with the tabs above</span>
-              </span>
-              <svg class="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
-            </button>
-            <button class="sort-opt" data-view="free">
-              <span class="s-ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="9" height="9" rx="1"/><rect x="11" y="10" width="10" height="10" rx="1"/></svg></span>
-              <span class="name">
-                <span class="label">Free canvas</span>
-                <span class="desc">Drag notes anywhere · resize from edges</span>
-              </span>
-              <svg class="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
-            </button>
-          </div>
+          <button type="button" class="view-seg-btn" data-view="free" title="Multi — canvas with all notes visible">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="9" height="9" rx="1"/><rect x="11" y="10" width="10" height="10" rx="1"/></svg>
+            <span>Multi</span>
+          </button>
         </div>
         <button class="sort-btn hidden" id="autoArrangeBtn" title="Snap all notes to a tidy grid">
           <svg viewBox="0 0 24 24"><path d="M3 3h7v7H3z"/><path d="M14 3h7v7h-7z"/><path d="M3 14h7v7H3z"/><path d="M14 14h7v7h-7z"/></svg>
@@ -1095,13 +1100,13 @@
   const menuBtn=$('menuBtn'),menuPanel=$('menuPanel');
   const toggleAddCred=$('toggleAddCred'),toggleAddGroup=$('toggleAddGroup'),addForm=$('addForm'),addGroupForm=$('addGroupForm'),addPanelCred=$('addPanelCred'),addPanelGroup=$('addPanelGroup'),listCredentials=$('listCredentials'),listServers=$('listServers'),listNotesEl=$('listNotes'),countCredEl=$('countCredentials'),countSrvEl=$('countServers'),countNotesEl=$('countNotes'),newGroupName=$('newGroupName'),sortBtn=$('sortBtn'),sortLabel=$('sortLabel'),sortIcon=$('sortIcon'),srvSortMenu=$('srvSortMenu'),credSortBtn=$('credSortBtn'),credSortMenu=$('credSortMenu'),credSortLabel=$('credSortLabel'),toast=$('toast'),toastMsg=$('toastMsg'),toastAction=$('toastAction'),backupBanner=$('backupBanner'),backupMsg=$('backupMsg'),credSearchEl=$('credSearch'),srvSearchEl=$('srvSearch'),noteSearchEl=$('noteSearch'),notesCard=$('notesCard'),noteImportFile=$('noteImportFile'),resetSortBtn=$('resetSortBtn'),noteModal=$('noteModal'),noteModalTitle=$('noteModalTitle'),noteModalBody=$('noteModalBody'),noteModalMeta=$('noteModalMeta'),pwdBanner=$('pwdBanner'),securityOverlay=$('securityOverlay'),securityCard=$('securityCard'),secIcon=$('secIcon'),secTitle=$('secTitle'),secSub=$('secSub'),secFields=$('secFields'),secError=$('secError'),secPrimary=$('secPrimary'),secSecondary=$('secSecondary'),secForgot=$('secForgot'),secForgotLink=$('secForgotLink');
   const tagFilterBtn=$('tagFilterBtn'),tagFilterDropdown=$('tagFilterDropdown'),tagFilterChips=$('tagFilterChips'),tagFilterLabel=$('tagFilterLabel'),tagFilterReset=$('tagFilterReset'),tagFilterWrap=$('tagFilterWrap');
-  const notesViewToggle=$('notesViewToggle'),notesViewIcon=$('notesViewIcon'),notesViewLabel=$('notesViewLabel'),notesViewMenu=$('notesViewMenu'),autoArrangeBtn=$('autoArrangeBtn'),autoSaveToggle=$('autoSaveToggle');
+  const notesViewSeg=$('notesViewSeg'),autoArrangeBtn=$('autoArrangeBtn'),autoSaveToggle=$('autoSaveToggle');
 
   let entries=[], groups=[], notes=[];
   let editingId=null, editingServer=null, editingGroupId=null, editingExtraId=null, addingToGroupId=null;
   let srvSort='name-asc', credSort='user-asc', credQuery='', srvQuery='', noteQuery='', colorPopover=null, draggedServer=null;
   let manualSortMode=false;
-  let notesViewMode='grid';
+  let notesViewMode='single';
   let activeNoteId=null;
   let autoSaveNotesEnabled=false;
   let dragState=null;
@@ -1327,6 +1332,40 @@
   function parseTags(str){return String(str||'').split(/[,\s;]+/).map(t=>t.trim().toLowerCase()).filter(Boolean).filter((t,i,a)=>a.indexOf(t)===i);}
   function tagClass(t){const k=String(t).toLowerCase();if(k==='prod'||k==='production')return't-prod';if(k==='dev'||k==='development'||k==='test'||k==='qa')return't-dev';if(k==='dc'||k==='dc1'||k==='dc2'||k==='dr')return't-dc';return'';}
 
+  /* ---- Password age battery ---- */
+  const PWD_MAX_MS = 8 * 60 * 60 * 1000;   // 8 hours
+  const PWD_STEP_MS = 30 * 60 * 1000;      // 30 min per visual step
+  const PWD_STEPS = 16;                    // 16 steps total
+  function passwordBatteryHtml(updatedAt){
+    if(!updatedAt) return '<span class="pwd-battery empty"><span class="pwd-battery-text">No date</span></span>';
+    const updated = new Date(updatedAt).getTime();
+    if(isNaN(updated)) return '<span class="pwd-battery empty"><span class="pwd-battery-text">No date</span></span>';
+    const elapsedMs = Math.max(0, Date.now() - updated);
+    if(elapsedMs >= PWD_MAX_MS){
+      const hh = Math.floor(elapsedMs / 3600000);
+      const mm = Math.floor((elapsedMs % 3600000) / 60000);
+      const label = hh > 0 ? (hh + 'h ago') : (mm + 'm ago');
+      return '<span class="pwd-battery expired" title="Password should be rotated"><span class="pwd-battery-text">Expired · ' + label + '</span></span>';
+    }
+    const stepIdx = Math.min(PWD_STEPS, Math.round(elapsedMs / PWD_STEP_MS));
+    const ratio = stepIdx / PWD_STEPS;
+    const remainingPct = Math.round((1 - ratio) * 100);
+    const r = Math.round(61  + (255 - 61)  * ratio);
+    const g = Math.round(220 + (107 - 220) * ratio);
+    const b = Math.round(132 + (107 - 132) * ratio);
+    const fillColor = 'rgb(' + r + ',' + g + ',' + b + ')';
+    const totalMin = Math.floor(elapsedMs / 60000);
+    const hh = Math.floor(totalMin / 60);
+    const mm = totalMin % 60;
+    const timeText = hh > 0 ? (hh + 'h ' + mm + 'm') : (mm + 'm');
+    return '<span class="pwd-battery" title="Password age: ' + timeText + '">' +
+      '<span class="pwd-battery-track">' +
+        '<span class="pwd-battery-fill" style="width:' + remainingPct + '%;background:' + fillColor + '"></span>' +
+      '</span>' +
+      '<span class="pwd-battery-text">' + timeText + '</span>' +
+    '</span>';
+  }
+
   /* ---- Rich text helpers ---- */
   function looksLikeHtml(s){return /<\s*(b|i|u|s|span|div|br|p|ul|ol|li|font|strong|em|strike|del|code|pre)\b/i.test(String(s||''));}
   function sanitizeNoteHtml(html){
@@ -1353,7 +1392,6 @@
             if(keep.length)child.setAttribute('style',keep.join('; '));
             else child.removeAttribute('style');
           } else if(a.name==='color'&&child.tagName==='FONT'){
-            /* allow */
           } else {
             child.removeAttribute(a.name);
           }
@@ -1648,7 +1686,7 @@
     try{const cs=localStorage.getItem(CRED_SORT_KEY);if(['user-asc','user-desc','status-recent','status-old'].indexOf(cs)!==-1)credSort=cs;}catch(e){}
     try{const v=parseInt(localStorage.getItem(AUTOLOCK_KEY)||'10',10);if(!isNaN(v)&&v>=0)autoLockMinutes=v;}catch(e){}
     try{const c=localStorage.getItem(CARDS_STATE_KEY);if(c){const p=JSON.parse(c);if(p&&typeof p==='object'){cardsCollapsed.credentials=!!p.credentials;cardsCollapsed.servers=!!p.servers;cardsCollapsed.notes=!!p.notes;}}}catch(e){}
-    try{const v=localStorage.getItem(NOTES_VIEW_KEY);if(v==='free'||v==='grid'||v==='single')notesViewMode=v;}catch(e){}
+    try{const v=localStorage.getItem(NOTES_VIEW_KEY);if(v==='free'||v==='single')notesViewMode=v;else notesViewMode='single';}catch(e){notesViewMode='single';}
     try{const v=localStorage.getItem(ACTIVE_NOTE_KEY);if(v)activeNoteId=v;}catch(e){}
     try{autoSaveNotesEnabled=localStorage.getItem(AUTOSAVE_NOTES_KEY)==='1';}catch(e){}
   }
@@ -1726,7 +1764,7 @@
   document.querySelectorAll('.card-collapse-btn').forEach(btn=>btn.addEventListener('click',e=>{e.stopPropagation();toggleCard(btn.dataset.card);}));
   document.querySelectorAll('.card-head').forEach(head=>{
     head.addEventListener('click',e=>{
-      if(e.target.closest('button, input, select, textarea, a, label, .card-head-right, .search-wrap, .sort-wrap, .tag-filter-wrap, .menu-panel, .menu-btn'))return;
+      if(e.target.closest('button, input, select, textarea, a, label, .card-head-right, .search-wrap, .sort-wrap, .tag-filter-wrap, .menu-panel, .menu-btn, .view-seg'))return;
       const n=head.getAttribute('data-card-head');if(!n)return;toggleCard(n);
     });
   });
@@ -1758,10 +1796,10 @@
   function updateCredSortButton(){const l={'user-asc':'User A–Z','user-desc':'User Z–A','status-recent':'Recent first','status-old':'Older first'};credSortLabel.textContent=l[credSort]||'User A–Z';credSortMenu.querySelectorAll('.sort-opt').forEach(b=>b.classList.toggle('active',b.dataset.sort===credSort));const ic={'user-asc':'<path d="M4 6h16"/><path d="M4 12h10"/><path d="M4 18h6"/><path d="M20 16V8"/><path d="M17 11l3-3 3 3"/>','user-desc':'<path d="M4 6h16"/><path d="M4 12h10"/><path d="M4 18h6"/><path d="M20 8v8"/><path d="M17 13l3 3 3-3"/>','status-recent':'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>','status-old':'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'};$('credSortIcon').innerHTML=ic[credSort]||ic['user-asc'];}
   function sortCredentialsArray(arr){const c=[...arr];if(credSort==='user-asc')c.sort((a,b)=>(a.username||'').localeCompare(b.username||'',undefined,{sensitivity:'base'}));else if(credSort==='user-desc')c.sort((a,b)=>(b.username||'').localeCompare(a.username||'',undefined,{sensitivity:'base'}));else if(credSort==='status-recent')c.sort((a,b)=>{const aT=isToday(a.updatedAt)?0:1,bT=isToday(b.updatedAt)?0:1;if(aT!==bT)return aT-bT;return(a.username||'').localeCompare(b.username||'',undefined,{sensitivity:'base'});});else if(credSort==='status-old')c.sort((a,b)=>{const aT=isToday(a.updatedAt)?0:1,bT=isToday(b.updatedAt)?0:1;if(aT!==bT)return bT-aT;return(a.username||'').localeCompare(b.username||'',undefined,{sensitivity:'base'});});return c;}
   function applyTheme(n){if(n==='dark')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem(THEME_KEY,n);}catch(e){}menuPanel.querySelectorAll('.theme-opt').forEach(b=>b.classList.toggle('active',b.dataset.theme===n));}
-  credSortBtn.addEventListener('click',e=>{e.stopPropagation();credSortMenu.classList.toggle('hidden');srvSortMenu.classList.add('hidden');if(notesViewMenu)notesViewMenu.classList.add('hidden');closeMenu();closeQuickMenu();closeMapPop();});
+  credSortBtn.addEventListener('click',e=>{e.stopPropagation();credSortMenu.classList.toggle('hidden');srvSortMenu.classList.add('hidden');closeMenu();closeQuickMenu();closeMapPop();});
   credSortMenu.querySelectorAll('.sort-opt').forEach(b=>b.addEventListener('click',()=>{credSort=b.dataset.sort;saveCredSort();updateCredSortButton();credSortMenu.classList.add('hidden');renderCredentials();showToast('Sorted by '+b.querySelector('.label').textContent);}));
   document.addEventListener('click',e=>{if(!credSortMenu.contains(e.target)&&!credSortBtn.contains(e.target))credSortMenu.classList.add('hidden');});
-  sortBtn.addEventListener('click',e=>{e.stopPropagation();const isOpen=!srvSortMenu.classList.contains('hidden');if(isOpen)srvSortMenu.classList.add('hidden');else srvSortMenu.classList.remove('hidden');credSortMenu.classList.add('hidden');if(notesViewMenu)notesViewMenu.classList.add('hidden');closeMenu();closeQuickMenu();closeMapPop();});
+  sortBtn.addEventListener('click',e=>{e.stopPropagation();const isOpen=!srvSortMenu.classList.contains('hidden');if(isOpen)srvSortMenu.classList.add('hidden');else srvSortMenu.classList.remove('hidden');credSortMenu.classList.add('hidden');closeMenu();closeQuickMenu();closeMapPop();});
   srvSortMenu.querySelectorAll('.sort-opt').forEach(b=>b.addEventListener('click',()=>{srvSort=b.dataset.sort;saveSort();updateSortButton();srvSortMenu.classList.add('hidden');sortIcon.classList.remove('spin');void sortIcon.offsetWidth;sortIcon.classList.add('spin');renderServers();showToast('Sorted: '+b.querySelector('.label').textContent);}));
   document.addEventListener('click',e=>{if(!srvSortMenu.contains(e.target)&&!sortBtn.contains(e.target))srvSortMenu.classList.add('hidden');});
 
@@ -1782,16 +1820,12 @@
     const rows=sorted.map(e=>{
       const isEd=editingId===e.id,vis=visiblePasswords.has(e.id);
       const pwD=vis?esc(e.password):maskPassword(e.password);
-      const d=daysSince(e.updatedAt);let st;
-      if(d===0)st='<span class="status today"><span class="dot"></span>Updated today</span>';
-      else if(d>=90)st='<span class="status stale" title="Not rotated in over 90 days"><span class="dot"></span>Rotate · '+d+'d</span>';
-      else if(d===Infinity)st='<span class="status recent"><span class="dot"></span>No date</span>';
-      else st='<span class="status recent"><span class="dot"></span>'+d+'d ago</span>';
+      const st=passwordBatteryHtml(e.updatedAt);
       const dc=dupCounts.get((e.username||'').trim().toLowerCase())||0;
       const dupBadge=dc>1?`<span class="dup-badge" title="Same username appears ${dc} times">${dc}×</span>`:'';
       return `<tr data-id="${e.id}" class="${isEd?'editing':''}"><td><div class="u-cell"><span class="avatar">${esc(initials(e.username))}</span><span class="u-text" data-act="copy-user" data-id="${e.id}" title="Click to copy">${esc(e.username)}</span>${dupBadge}</div></td><td><div class="p-cell">${isEd?`<input class="edit-input" type="text" autocomplete="off" value="${esc(e.password)}">`:`<span class="pw-text ${vis?'':'masked'}" data-act="copy-pass" data-id="${e.id}" title="Click to copy password">${pwD}</span><button class="pw-toggle" data-act="toggle-pass" data-id="${e.id}" title="${vis?'Hide':'Show'} password">${vis?SVG_EYE_OFF:SVG_EYE}</button>`}</div></td><td class="status-cell">${st}</td><td class="actions-cell"><div class="actions">${isEd?`<button class="act primary" data-act="save" data-id="${e.id}">${SVG_SAVE}<span class="btn-label"> Save</span></button><button class="act" data-act="cancel" data-id="${e.id}">${SVG_X}<span class="btn-label"> Cancel</span></button>`:`<button class="act icon-only" data-act="copy-pair" data-id="${e.id}" title="Copy user + password (tab-separated)">${SVG_COPY}</button><button class="act map" data-act="map-drive" data-id="${e.id}" title="Generate net use command to map a network drive">${SVG_DRIVE}<span class="btn-label"> Map</span></button><button class="act" data-act="update" data-id="${e.id}">${SVG_PENCIL}<span class="btn-label"> Update</span></button><button class="act danger icon-only" data-act="delete" data-id="${e.id}" title="Delete">${SVG_TRASH}</button>`}</div></td></tr>`;
     }).join('');
-    listCredentials.innerHTML=`<table><thead><tr><th class="col-user" style="width:45%"><span class="th-inner"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Username</span></th><th class="col-pass" style="width:40%"><span class="th-inner"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Password</span></th><th class="col-status" style="width:30%"><span class="th-inner"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Status</span></th><th class="col-actions" style="width:38%">Actions</th></tr></thead><tbody>${rows}</tbody></table>`;
+    listCredentials.innerHTML=`<table><thead><tr><th class="col-user" style="width:45%"><span class="th-inner"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Username</span></th><th class="col-pass" style="width:40%"><span class="th-inner"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Password</span></th><th class="col-status" style="width:30%"><span class="th-inner"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Age (8h)</span></th><th class="col-actions" style="width:38%">Actions</th></tr></thead><tbody>${rows}</tbody></table>`;
     if(editingId){const i=listCredentials.querySelector('.edit-input');if(i){i.focus();i.select();}}
   }
   function startEdit(id){editingId=id;renderCredentials();}
@@ -2292,71 +2326,26 @@
     temp.remove();saveNotes();
   }
   function updateNotesViewToggle(){
-    if (!notesViewToggle) return;
-    const labels={
-      grid:{name:'Grid'},
-      single:{name:'Single'},
-      free:{name:'Free'}
-    };
-    const icons={
-      grid:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
-      single:'<rect x="3" y="4" width="18" height="4" rx="1"/><rect x="3" y="11" width="18" height="10" rx="1"/>',
-      free:'<rect x="3" y="4" width="9" height="9" rx="1"/><rect x="11" y="10" width="10" height="10" rx="1"/>'
-    };
-    const L=labels[notesViewMode]||labels.grid;
-    if(notesViewMenu && notesViewMenu.classList.contains('hidden')) notesViewToggle.classList.remove('active');
-    else notesViewToggle.classList.add('active');
-    notesViewLabel.textContent=L.name;
-    notesViewIcon.innerHTML=icons[notesViewMode]||icons.grid;
+    if (!notesViewSeg) return;
+    notesViewSeg.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===notesViewMode));
     autoArrangeBtn.classList.toggle('hidden', !(notesViewMode==='free' && !isMobile()));
-    if(notesViewMenu)notesViewMenu.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===notesViewMode));
   }
   function setNotesViewMode(mode){
     if(mode===notesViewMode)return;
     if(dirtyNotes.size){notes.forEach(n=>{if(dirtyNotes.has(n.id))n.updatedAt=new Date().toISOString();});saveNotes();dirtyNotes.clear();}
-    if(mode==='free'&&notesViewMode!=='free'){
-      const grid=listNotesEl.querySelector('.notes-grid');
-      if(grid){
-        const gr=grid.getBoundingClientRect();
-        let maxZ=0;
-        notes.forEach(n=>{if(typeof n.z==='number'&&n.z>maxZ)maxZ=n.z;});
-        grid.querySelectorAll('.note').forEach(el=>{
-          const n=notes.find(x=>x.id===el.dataset.id);if(!n)return;
-          const r=el.getBoundingClientRect();
-          n.x=Math.round(r.left-gr.left);
-          n.y=Math.round(r.top-gr.top);
-          n.z=++maxZ;
-          if(typeof n.customW!=='number')n.customW=Math.round(r.width);
-          if(typeof n.customH!=='number')n.customH=Math.round(r.height);
-        });
-        saveNotes();
-      }
+    if(mode==='free'){
+      const missing=notes.some(n=>typeof n.x!=='number'||typeof n.y!=='number');
+      if(missing)autoArrangeInternal();
     }
     notesViewMode=mode;
     saveNotesViewMode();updateNotesViewToggle();renderNotes();
-    const msgs={grid:'Grid view',single:'Single-note view — click a tab to switch notes',free:'Free canvas — drag to move, drag edges to resize'};
-    showToast(msgs[mode]);
+    showToast(mode==='single'?'Single note view':'Multi-note canvas');
   }
-  notesViewToggle.addEventListener('click',e=>{
-    e.stopPropagation();
-    const isOpen=!notesViewMenu.classList.contains('hidden');
-    credSortMenu.classList.add('hidden');
-    srvSortMenu.classList.add('hidden');
-    closeMenu();closeQuickMenu();closeMapPop();
-    notesViewMenu.classList.toggle('hidden',isOpen);
-    notesViewToggle.classList.toggle('active',!isOpen);
-  });
-  notesViewMenu.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>{
-    notesViewMenu.classList.add('hidden');
-    notesViewToggle.classList.remove('active');
-    const target=b.dataset.view;
-    setNotesViewMode(target===notesViewMode ? 'grid' : target);
-  }));
-  document.addEventListener('click',e=>{
-    if(!notesViewMenu.classList.contains('hidden')&&!notesViewMenu.contains(e.target)&&!notesViewToggle.contains(e.target)){
-      notesViewMenu.classList.add('hidden');
-      notesViewToggle.classList.toggle('active',notesViewMode!=='grid');
-    }
+  notesViewSeg.querySelectorAll('[data-view]').forEach(b=>{
+    b.addEventListener('click',e=>{
+      e.stopPropagation();
+      setNotesViewMode(b.dataset.view);
+    });
   });
   autoArrangeBtn.addEventListener('click', e => { e.stopPropagation(); if (!notes.length) { showToast('No notes to arrange'); return; } autoArrangeInternal(); renderNotes(); showToast('Notes auto-arranged'); });
 
@@ -3031,6 +3020,29 @@
   window.addEventListener('scroll',()=>{if(!rteToolbar.classList.contains('hidden'))rteHide();},true);
   window.addEventListener('resize',()=>{if(!rteToolbar.classList.contains('hidden'))rteHide();});
 
+  function startPwdBatteryTimer(){
+    if(startPwdBatteryTimer._t) clearInterval(startPwdBatteryTimer._t);
+    startPwdBatteryTimer._t = setInterval(() => {
+      if(isLocked) return;
+      if(!entries.length) return;
+      const cc=$('cardCredentials');
+      if(!cc || cc.classList.contains('collapsed')) return;
+      const active=document.activeElement;
+      if(active && (active.tagName==='INPUT' || active.tagName==='TEXTAREA' || active.isContentEditable)) return;
+      const table=listCredentials.querySelector('table');
+      if(!table) return;
+      table.querySelectorAll('tr[data-id]').forEach(tr => {
+        const id=tr.dataset.id;
+        const e=entries.find(x => x.id===id);
+        if(!e) return;
+        const cell=tr.querySelector('.status-cell');
+        if(!cell) return;
+        const html=passwordBatteryHtml(e.updatedAt);
+        if(cell.innerHTML!==html) cell.innerHTML=html;
+      });
+    }, 30 * 1000);
+  }
+
   $('exportAllBtn').addEventListener('click',()=>{
     if(dirtyNotes.size){notes.forEach(n=>{if(dirtyNotes.has(n.id))n.updatedAt=new Date().toISOString();});saveNotes();dirtyNotes.clear();renderNotes();}
     const payload={app:'vm-credentials-manager',version:23,exportedAt:new Date().toISOString(),credentials:entries,serverGroups:groups,notes:notes,notesViewMode:notesViewMode};
@@ -3065,7 +3077,7 @@
           if(Array.isArray(d.credentials))nc=d.credentials.map(i=>({id:uid(),username:String(i.username||''),password:String(i.password||''),createdAt:i.createdAt||new Date().toISOString(),updatedAt:i.updatedAt||new Date().toISOString()}));
           if(Array.isArray(d.serverGroups))ng=d.serverGroups.map(g=>sanitizeGroup(g));
           if(Array.isArray(d.notes))nn=d.notes.map(sanitizeNote);
-          if(d.notesViewMode==='free'||d.notesViewMode==='grid'||d.notesViewMode==='single')notesViewMode=d.notesViewMode;
+          if(d.notesViewMode==='free'||d.notesViewMode==='single')notesViewMode=d.notesViewMode;
         } else throw new Error('Unrecognized file format');
         const have=entries.length||groups.length||notes.length;
         if(have){const m='This will REPLACE all current data.\n\nFile contains:\n• '+nc.length+' credential(s)\n• '+ng.length+' server group(s)\n• '+nn.length+' note(s)\n\nContinue?';if(!confirm(m)){importFile.value='';return;}}
@@ -3096,7 +3108,6 @@
     if(e.key==='Escape'){
       if(!mapPop.classList.contains('hidden')){closeMapPop();return;}
       credSortMenu.classList.add('hidden');srvSortMenu.classList.add('hidden');
-      if(notesViewMenu && !notesViewMenu.classList.contains('hidden')){notesViewMenu.classList.add('hidden');notesViewToggle.classList.toggle('active',notesViewMode!=='grid');}
       closeQuickMenu();closeColorPicker();closeMenu();
       if(!addPanelCred.classList.contains('hidden'))closePanel('cred');
       if(!addPanelGroup.classList.contains('hidden'))closePanel('group');
@@ -3133,7 +3144,7 @@
     try{const s=localStorage.getItem(THEME_KEY);applyTheme(s||'dark');}catch(e){applyTheme('dark');}
     updateSortButton();updateCredSortButton();updateDate();
     applyCardCollapse();updateSecurityUI();resetIdleTimer();updateAutoSaveUI();
-    renderCredentials();renderServers();renderNotes();updateStats();
+    renderCredentials();startPwdBatteryTimer();renderServers();renderNotes();updateStats();
     checkBackupReminder();checkPasswordBanner();
     if(FSA_SUPPORTED){try{await restoreHandlesFromIdb();renderNotes();}catch(e){}}
     requestAnimationFrame(()=>{document.body.classList.add('app-ready');document.body.classList.remove('password-locked');});
