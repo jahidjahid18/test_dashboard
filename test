@@ -684,6 +684,11 @@
     background-size:14px;
   }
   .map-field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(91,149,255,.2)}
+  .map-hint{font-size:10.5px;color:var(--muted);margin-top:5px;font-style:italic;line-height:1.5}
+  .map-hint code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--panel-2);padding:1px 4px;border-radius:3px;font-size:10.5px;color:var(--accent-2);border:1px solid var(--line)}
+  .mp-share-preview{display:none;font-size:11px;color:var(--muted);margin-top:6px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;padding:5px 8px;background:var(--panel-2);border-radius:6px;border:1px solid var(--line-soft);word-break:break-all}
+  .mp-share-preview.show{display:block}
+  .mp-share-preview b{color:var(--accent-2);font-weight:700}
   .map-chips{display:flex;gap:6px;flex-wrap:wrap}
   .map-chip{
     padding:6px 12px;border-radius:20px;
@@ -720,6 +725,8 @@
   .map-pop-actions button.primary:hover{filter:brightness(1.1);color:#fff}
   .map-pop-actions button:disabled{opacity:.45;cursor:not-allowed}
   .map-pop-actions button svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.2}
+  .map-pop-reset{font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--muted);background:transparent;border:1px solid var(--line-soft);border-radius:6px;padding:3px 7px;cursor:pointer;transition:.15s;font-family:inherit}
+  .map-pop-reset:hover{color:var(--warn);border-color:var(--warn)}
 
   /* ============== ERASE CONFIRM MODAL ============== */
   .erase-overlay{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px);animation:fadeIn .15s}
@@ -1008,7 +1015,7 @@
 <script>
 (function(){
   'use strict';
-  const CRED_KEY='vm-credentials-v5', GROUPS_KEY='vm-server-groups-v2', OLD_KEY='vm-server-list-v2', OLD_GROUPS_KEY='vm-server-groups-v1', SORT_KEY='vm-groups-sort', CRED_SORT_KEY='vm-cred-sort', THEME_KEY='vm-theme', LAST_EXPORT_KEY='vm-last-export', NOTES_KEY='vm-notes-v1', CARDS_STATE_KEY='vm-cards-collapsed', AUTOLOCK_KEY='vm-autolock', AUTOSAVE_NOTES_KEY='vm-autosave-notes-v1', ACTIVE_NOTE_KEY='vm-active-note-v1';
+  const CRED_KEY='vm-credentials-v5', GROUPS_KEY='vm-server-groups-v2', OLD_KEY='vm-server-list-v2', OLD_GROUPS_KEY='vm-server-groups-v1', SORT_KEY='vm-groups-sort', CRED_SORT_KEY='vm-cred-sort', THEME_KEY='vm-theme', LAST_EXPORT_KEY='vm-last-export', NOTES_KEY='vm-notes-v1', CARDS_STATE_KEY='vm-cards-collapsed', AUTOLOCK_KEY='vm-autolock', AUTOSAVE_NOTES_KEY='vm-autosave-notes-v1', ACTIVE_NOTE_KEY='vm-active-note-v1', MAP_POP_STATE_KEY='vm-map-pop-states-v1';
   const MASTER_HASH_KEY='vm-master-hash-v1', MASTER_SALT_KEY='vm-master-salt-v1', MASTER_ITER_KEY='vm-master-iter-v1', VERIFIER_KEY='vm-verify-v1', SESSION_UNLOCK_KEY='vm-session-unlocked-v1', PWD_BANNER_DISMISS_KEY='vm-pwd-banner-dismissed-v1';
   const PBKDF2_ITER = 200000;
   const FSA_SUPPORTED = typeof window !== 'undefined' && typeof window.showSaveFilePicker === 'function' && typeof window.showOpenFilePicker === 'function';
@@ -1034,6 +1041,7 @@
   let secMode=null;
   let secForceLock=false;
   let cryptoKey=null;
+  let mapPopStates = (function(){ try { return JSON.parse(localStorage.getItem(MAP_POP_STATE_KEY)||'{}') || {}; } catch(e){ return {}; } })();
   const visiblePasswords=new Set(), activeTags=new Set(), dirtyNotes=new Set(), savingIds=new Set(), noteFileHandles=new Map();
   const autoSaveTimers=new Map();
 
@@ -1223,6 +1231,7 @@
   function saveCardsState(){try{localStorage.setItem(CARDS_STATE_KEY,JSON.stringify(cardsCollapsed));}catch(e){}}
   function saveActiveNoteId(){try{if(activeNoteId)localStorage.setItem(ACTIVE_NOTE_KEY,activeNoteId);else localStorage.removeItem(ACTIVE_NOTE_KEY);}catch(e){}}
   function saveAutoSaveMode(){try{localStorage.setItem(AUTOSAVE_NOTES_KEY,autoSaveNotesEnabled?'1':'0');}catch(e){}}
+  function saveMapPopStates(){try{localStorage.setItem(MAP_POP_STATE_KEY,JSON.stringify(mapPopStates));}catch(e){}}
 
   function uid(){return(crypto.randomUUID&&crypto.randomUUID())||'id-'+Date.now()+'-'+Math.random().toString(16).slice(2);}
   function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
@@ -1350,7 +1359,10 @@
   menuBtn.addEventListener('click',e=>{e.stopPropagation();if(menuPanel.classList.contains('hidden'))openMenu();else closeMenu();});
   document.addEventListener('click',e=>{if(!menuPanel.contains(e.target)&&!menuBtn.contains(e.target))closeMenu();});
   document.addEventListener('keydown',e=>{
-    if(e.key==='Escape')closeMenu();
+    if(e.key==='Escape'){
+      closeMenu();
+      if(!mapPop.classList.contains('hidden')){closeMapPop();}
+    }
     if(e.key.toLowerCase()==='m'){
       const tag=(e.target.tagName||'').toLowerCase();
       if(tag==='input'||tag==='textarea'||e.target.isContentEditable||e.ctrlKey||e.metaKey||e.altKey)return;
@@ -1750,6 +1762,22 @@
     if(mapAnchorBtn)mapAnchorBtn.classList.remove('active');
     mapAnchorBtn=null;mapCred=null;
   }
+  function normalizeShare(raw){
+    let s = String(raw||'').trim().replace(/^\\+/,'');
+    if(!s) return '';
+    s = s.replace(/\//g,'\\');
+    let m = s.match(/^([a-zA-Z])\$(\\|$)(.*)$/);
+    if(m){
+      const rest = (m[3]||'').replace(/^\\+/,'').replace(/\\+$/,'');
+      return m[1].toLowerCase() + '$' + (rest ? '\\' + rest : '');
+    }
+    m = s.match(/^([a-zA-Z]):(\\?)(.*)$/);
+    if(m){
+      const rest = (m[3]||'').replace(/^\\+/,'').replace(/\\+$/,'');
+      return m[1].toLowerCase() + '$' + (rest ? '\\' + rest : '');
+    }
+    return s;
+  }
   function mapBuildCmd(){
     if(!mapCred)return'';
     const server=mapPop.querySelector('.mp-server').value.trim().replace(/^\\+/,'');
@@ -1759,7 +1787,7 @@
     if(!server)return'';
     let share='';
     if(shareAttr==='custom'){
-      share=mapPop.querySelector('.mp-custom').value.trim().replace(/^\\+/,'');
+      share=normalizeShare(mapPop.querySelector('.mp-custom').value);
       if(!share)return'';
     } else if(shareAttr){
       share=shareAttr;
@@ -1767,6 +1795,16 @@
     const unc='\\\\'+server+'\\'+share;
     const pw='"'+String(mapCred.password||'').replace(/"/g,'""')+'"';
     return 'net use '+letter+': '+unc+' '+pw+' /user:'+mapCred.username+' /persistent:no && explorer '+letter+':';
+  }
+  function updateSharePreview(){
+    const wrap=mapPop.querySelector('.mp-share-preview');
+    if(!wrap)return;
+    const input=mapPop.querySelector('.mp-custom');
+    const raw=input?input.value.trim():'';
+    if(!raw){wrap.classList.remove('show');wrap.textContent='';return;}
+    const norm=normalizeShare(raw);
+    wrap.innerHTML='Share will be: <b>'+esc(norm)+'</b>';
+    wrap.classList.add('show');
   }
   function mapRefresh(){
     const cmd=mapBuildCmd();
@@ -1802,11 +1840,14 @@
     mapPop.innerHTML=
       '<div class="map-pop-head">'+
         '<span class="who">Map drive · <b>'+esc(e.username)+'</b></span>'+
-        '<button class="x" type="button" title="Close">✕</button>'+
+        '<div style="display:flex;gap:6px;align-items:center">'+
+          '<button type="button" class="map-pop-reset" title="Clear saved inputs for this credential">Reset</button>'+
+          '<button class="x" type="button" title="Close (Esc)">✕</button>'+
+        '</div>'+
       '</div>'+
       '<div class="map-field">'+
         '<label>Server name or IP</label>'+
-        '<input class="mp-server" type="text" placeholder="e.g. 192.168.1.10" autocomplete="off" spellcheck="false">'+
+        '<input class="mp-server" type="text" placeholder="e.g. abc.biz" autocomplete="off" spellcheck="false">'+
       '</div>'+
       '<div class="map-field">'+
         '<label>Drive / share</label>'+
@@ -1817,8 +1858,10 @@
         '</div>'+
       '</div>'+
       '<div class="map-field mp-custom-wrap hidden">'+
-        '<label>Custom share name</label>'+
-        '<input class="mp-custom" type="text" placeholder="data or admin$" autocomplete="off" spellcheck="false">'+
+        '<label>Custom share / local path</label>'+
+        '<input class="mp-custom" type="text" placeholder="data, admin$, or C:\\temp" autocomplete="off" spellcheck="false">'+
+        '<div class="map-hint">Tip: type <code>C:\\temp</code> — auto-converts to share <code>C$\\temp</code></div>'+
+        '<div class="mp-share-preview"></div>'+
       '</div>'+
       '<div class="map-field">'+
         '<label>Map to drive letter</label>'+
@@ -1845,21 +1888,58 @@
     const chips=mapPop.querySelectorAll('.map-chip');
     const copyBtn=mapPop.querySelector('.mp-copy');
     const closeBtn=mapPop.querySelector('.map-pop-head .x');
+    const resetBtn=mapPop.querySelector('.map-pop-reset');
+
+    // Restore last-entered values for this credential (if any)
+    const saved=mapPopStates[id];
+    if(saved){
+      if(typeof saved.server==='string') serverI.value=saved.server;
+      if(typeof saved.letter==='string') letterI.value=saved.letter;
+      if(saved.shareMode){
+        chips.forEach(c=>c.classList.toggle('active', c.dataset.share===saved.shareMode));
+        if(saved.shareMode==='custom') customWrap.classList.remove('hidden');
+      }
+      if(typeof saved.customShare==='string') mapPop.querySelector('.mp-custom').value=saved.customShare;
+    }
+
+    const persist=()=>{
+      mapPopStates[id]={
+        server: serverI.value,
+        letter: letterI.value,
+        shareMode: (mapPop.querySelector('.map-chip.active')||{}).dataset ? mapPop.querySelector('.map-chip.active').dataset.share : 'c$',
+        customShare: mapPop.querySelector('.mp-custom').value
+      };
+      saveMapPopStates();
+    };
 
     setTimeout(()=>{ serverI.focus(); }, 30);
 
-    serverI.addEventListener('input',mapRefresh);
-    letterI.addEventListener('change',mapRefresh);
-    mapPop.querySelector('.mp-custom').addEventListener('input',mapRefresh);
+    serverI.addEventListener('input',()=>{persist();mapRefresh();});
+    letterI.addEventListener('change',()=>{persist();mapRefresh();});
+    mapPop.querySelector('.mp-custom').addEventListener('input',()=>{updateSharePreview();persist();mapRefresh();});
 
     chips.forEach(ch=>ch.addEventListener('click',()=>{
       chips.forEach(c=>c.classList.remove('active'));
       ch.classList.add('active');
       customWrap.classList.toggle('hidden', ch.dataset.share!=='custom');
       if(ch.dataset.share==='custom') mapPop.querySelector('.mp-custom').focus();
+      persist();
       mapRefresh();
+      updateSharePreview();
     }));
     closeBtn.addEventListener('click',closeMapPop);
+    resetBtn.addEventListener('click',()=>{
+      delete mapPopStates[id];
+      saveMapPopStates();
+      serverI.value='';
+      letterI.value='Z';
+      mapPop.querySelector('.mp-custom').value='';
+      chips.forEach(c=>c.classList.toggle('active', c.dataset.share==='c$'));
+      customWrap.classList.add('hidden');
+      updateSharePreview();
+      mapRefresh();
+      showToast('Cleared saved Map Drive inputs');
+    });
     copyBtn.addEventListener('click',async()=>{
       const outEl=mapPop.querySelector('.mp-out');
       const txt=outEl.textContent;
@@ -1870,13 +1950,12 @@
 
     mapPosition();
     mapRefresh();
+    updateSharePreview();
+    persist();
   }
-  document.addEventListener('click',ev=>{
-    if(mapPop.classList.contains('hidden'))return;
-    if(mapPop.contains(ev.target))return;
-    if(mapAnchorBtn && mapAnchorBtn.contains(ev.target))return;
-    closeMapPop();
-  }, true);
+  // NOTE: Map popup intentionally does NOT close on outside click.
+  // It stays open so you can copy paths from Excel and come back.
+  // Close via ✕ button, Reset button, or Esc.
   window.addEventListener('scroll',()=>{ if(!mapPop.classList.contains('hidden')) mapPosition(); }, true);
   window.addEventListener('resize',()=>{ if(!mapPop.classList.contains('hidden')) mapPosition(); });
 
