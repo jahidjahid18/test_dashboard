@@ -116,9 +116,6 @@
   .notes-card .card-head-right .add-btn{height:34px;padding:0 10px;font-size:12.5px;letter-spacing:.2px}
   .notes-card .card-head-right .sort-btn svg,
   .notes-card .card-head-right .add-btn svg{width:13px;height:13px}
-  .notes-card .card-head-right .search-wrap input{height:34px;width:120px;padding:0 10px 0 30px;font-size:13px}
-  .notes-card .card-head-right .search-wrap input:focus{width:170px}
-  .notes-card .card-head-right .search-wrap svg{width:13px;height:13px;left:10px}
 
   .backup-banner{display:flex;align-items:center;gap:12px;padding:12px 16px;margin-bottom:14px;border-radius:12px;border:1px solid rgba(255,204,0,.5);background:linear-gradient(180deg,rgba(255,204,0,.14),rgba(255,204,0,.05));color:var(--txt);font-size:14px;font-weight:600;box-shadow:0 18px 40px -24px rgba(0,0,0,.6)}
   .backup-banner svg{width:18px;height:18px;flex:none;stroke:var(--warn);fill:none;stroke-width:2.2}
@@ -934,7 +931,6 @@
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
           <span>Auto-save</span>
         </button>
-        <div class="search-wrap"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg><input id="noteSearch" type="search" placeholder="Search notes…" autocomplete="off"></div>
         <button class="sort-btn" id="importNotesBtn" title="Import .txt files (linked to disk)"><svg viewBox="0 0 24 24"><path d="M12 21V9"/><path d="M7 14l5-5 5 5"/><path d="M5 3h14"/></svg>Import .txt</button>
         <button class="add-btn notes" id="addNoteBtn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add note</button>
       </div>
@@ -1020,13 +1016,13 @@
   const $ = id => document.getElementById(id);
 
   const menuBtn=$('menuBtn'),menuPanel=$('menuPanel');
-  const toggleAddCred=$('toggleAddCred'),toggleAddGroup=$('toggleAddGroup'),addForm=$('addForm'),addGroupForm=$('addGroupForm'),addPanelCred=$('addPanelCred'),addPanelGroup=$('addPanelGroup'),listCredentials=$('listCredentials'),listServers=$('listServers'),listNotesEl=$('listNotes'),countCredEl=$('countCredentials'),countSrvEl=$('countServers'),countNotesEl=$('countNotes'),newGroupName=$('newGroupName'),sortBtn=$('sortBtn'),sortLabel=$('sortLabel'),sortIcon=$('sortIcon'),srvSortMenu=$('srvSortMenu'),credSortBtn=$('credSortBtn'),credSortMenu=$('credSortMenu'),credSortLabel=$('credSortLabel'),toast=$('toast'),toastMsg=$('toastMsg'),toastAction=$('toastAction'),backupBanner=$('backupBanner'),backupMsg=$('backupMsg'),credSearchEl=$('credSearch'),srvSearchEl=$('srvSearch'),noteSearchEl=$('noteSearch'),notesCard=$('notesCard'),noteImportFile=$('noteImportFile'),noteModal=$('noteModal'),noteModalTitle=$('noteModalTitle'),noteModalBody=$('noteModalBody'),noteModalMeta=$('noteModalMeta'),pwdBanner=$('pwdBanner'),securityOverlay=$('securityOverlay'),securityCard=$('securityCard'),secIcon=$('secIcon'),secTitle=$('secTitle'),secSub=$('secSub'),secFields=$('secFields'),secError=$('secError'),secPrimary=$('secPrimary'),secSecondary=$('secSecondary'),secForgot=$('secForgot'),secForgotLink=$('secForgotLink');
+  const toggleAddCred=$('toggleAddCred'),toggleAddGroup=$('toggleAddGroup'),addForm=$('addForm'),addGroupForm=$('addGroupForm'),addPanelCred=$('addPanelCred'),addPanelGroup=$('addPanelGroup'),listCredentials=$('listCredentials'),listServers=$('listServers'),listNotesEl=$('listNotes'),countCredEl=$('countCredentials'),countSrvEl=$('countServers'),countNotesEl=$('countNotes'),newGroupName=$('newGroupName'),sortBtn=$('sortBtn'),sortLabel=$('sortLabel'),sortIcon=$('sortIcon'),srvSortMenu=$('srvSortMenu'),credSortBtn=$('credSortBtn'),credSortMenu=$('credSortMenu'),credSortLabel=$('credSortLabel'),toast=$('toast'),toastMsg=$('toastMsg'),toastAction=$('toastAction'),backupBanner=$('backupBanner'),backupMsg=$('backupMsg'),credSearchEl=$('credSearch'),srvSearchEl=$('srvSearch'),notesCard=$('notesCard'),noteImportFile=$('noteImportFile'),noteModal=$('noteModal'),noteModalTitle=$('noteModalTitle'),noteModalBody=$('noteModalBody'),noteModalMeta=$('noteModalMeta'),pwdBanner=$('pwdBanner'),securityOverlay=$('securityOverlay'),securityCard=$('securityCard'),secIcon=$('secIcon'),secTitle=$('secTitle'),secSub=$('secSub'),secFields=$('secFields'),secError=$('secError'),secPrimary=$('secPrimary'),secSecondary=$('secSecondary'),secForgot=$('secForgot'),secForgotLink=$('secForgotLink');
   const tagFilterBtn=$('tagFilterBtn'),tagFilterDropdown=$('tagFilterDropdown'),tagFilterChips=$('tagFilterChips'),tagFilterLabel=$('tagFilterLabel'),tagFilterReset=$('tagFilterReset'),tagFilterWrap=$('tagFilterWrap');
   const autoSaveToggle=$('autoSaveToggle');
 
   let entries=[], groups=[], notes=[];
   let editingId=null, editingServer=null, editingGroupId=null, editingExtraId=null, addingToGroupId=null;
-  let srvSort='name-asc', credSort='user-asc', credQuery='', srvQuery='', noteQuery='', colorPopover=null, draggedServer=null;
+  let srvSort='name-asc', credSort='user-asc', credQuery='', srvQuery='', colorPopover=null, draggedServer=null;
   let activeNoteId=null;
   let autoSaveNotesEnabled=false;
   let modalNoteId=null;
@@ -2180,15 +2176,12 @@
 
   function renderNotes(){
     countNotesEl.textContent=notes.length;
-    const q=noteQuery.trim().toLowerCase();
-    let view=notes;
-    if(q)view=notes.filter(n=>(n.title||'').toLowerCase().includes(q)||htmlToPlainText(n.body||'').toLowerCase().includes(q));
-    view=view.slice().sort((a,b)=>{
+    let view=notes.slice().sort((a,b)=>{
       if(a.pinned!==b.pinned)return a.pinned?-1:1;
       return new Date(b.createdAt)-new Date(a.createdAt);
     });
-    if(!view.length){
-      listNotesEl.innerHTML=notes.length?'<div class="empty"><span class="big">🔍</span>No notes match "'+esc(noteQuery)+'".</div>':'<div class="empty"><span class="big">📝</span>No notes yet.<div class="hint">Click "Add note" or "Import .txt".</div><button id="emptyAddNote">'+SVG_PLUS+'Create first note</button></div>';
+    if(!notes.length){
+      listNotesEl.innerHTML='<div class="empty"><span class="big">📝</span>No notes yet.<div class="hint">Click "Add note" or "Import .txt".</div><button id="emptyAddNote">'+SVG_PLUS+'Create first note</button></div>';
       const b=$('emptyAddNote');if(b)b.addEventListener('click',createNote);
       return;
     }
@@ -2319,8 +2312,6 @@
       r.readAsText(f);
     });
   }
-  noteSearchEl.addEventListener('input',e=>{e.stopPropagation();noteQuery=noteSearchEl.value;renderNotes();});
-  noteSearchEl.addEventListener('click',e=>e.stopPropagation());
   $('addNoteBtn').addEventListener('click',e=>{e.stopPropagation();createNote();});
   $('importNotesBtn').addEventListener('click',e=>{e.stopPropagation();if(FSA_SUPPORTED)importTxtWithPicker();else noteImportFile.click();});
   noteImportFile.addEventListener('change',()=>{importTxtFilesNoHandle(noteImportFile.files);noteImportFile.value='';});
