@@ -52,7 +52,133 @@
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
     border-color: #e2e8f0;
   }
+  /* ---- Sakura (Pink Blossom) ---- */
+  html[data-theme="sakura"]{
+    --bg:#fff5f8;--panel:#ffffff;--panel-2:#fff0f4;--row:#ffffff;--row-alt:#fff8fa;
+    --row-hover:#ffe4ec;--line:#f5d4e0;--line-soft:#f9e3eb;--txt:#3d1f2e;--muted:#8b6a78;
+    --accent:#ff6b9d;--accent-2:#e84a85;--ok:#2eb87a;--bad:#e8436d;--warn:#d99100;
+    --grad-1:#ffe0ec;--grad-2:#fff0f5;
+  }
+  html[data-theme="sakura"] body{
+    background:
+      radial-gradient(circle at 12% 22%, rgba(255,182,208,.38) 0%, transparent 22%),
+      radial-gradient(circle at 88% 18%, rgba(255,200,220,.32) 0%, transparent 25%),
+      radial-gradient(circle at 75% 88%, rgba(255,182,208,.28) 0%, transparent 28%),
+      radial-gradient(circle at 35% 70%, rgba(255,215,230,.30) 0%, transparent 20%),
+      radial-gradient(1100px 560px at 15% -10%, #ffe0ec 0%, transparent 55%),
+      radial-gradient(900px 500px at 100% 0%, #fff0f5 0%, transparent 50%),
+      var(--bg);
+  }
+  html[data-theme="sakura"] .card{
+    box-shadow:0 4px 6px -1px rgba(255,107,157,.07), 0 2px 4px -1px rgba(255,107,157,.05);
+    border-color:#f9e3eb;
+  }
 
+  /* ---- Forest (Green Leafy) ---- */
+  html[data-theme="forest"]{
+    --bg:#f2fbf3;--panel:#ffffff;--panel-2:#e8f7ec;--row:#ffffff;--row-alt:#f5fbf7;
+    --row-hover:#daf0e0;--line:#c5e2cd;--line-soft:#dcefe2;--txt:#0f2e1a;--muted:#4e6b58;
+    --accent:#2e9e5b;--accent-2:#218046;--ok:#1ea550;--bad:#d94a4a;--warn:#c99700;
+    --grad-1:#d9f2e0;--grad-2:#e8f8ec;
+  }
+  html[data-theme="forest"] body{
+    background:
+      radial-gradient(ellipse at 8% 10%, rgba(155,215,175,.42) 0%, transparent 22%),
+      radial-gradient(ellipse at 92% 20%, rgba(180,230,195,.35) 0%, transparent 24%),
+      radial-gradient(ellipse at 15% 95%, rgba(140,205,160,.32) 0%, transparent 28%),
+      radial-gradient(ellipse at 80% 90%, rgba(165,225,180,.30) 0%, transparent 22%),
+      radial-gradient(1100px 560px at 15% -10%, #d9f2e0 0%, transparent 55%),
+      radial-gradient(900px 500px at 100% 0%, #e8f8ec 0%, transparent 50%),
+      var(--bg);
+  }
+  html[data-theme="forest"] .card{
+    box-shadow:0 4px 6px -1px rgba(46,158,91,.07), 0 2px 4px -1px rgba(46,158,91,.05);
+    border-color:#dcefe2;
+  }
+
+  /* ---- Ocean (Beach Waves) ---- */
+  html[data-theme="ocean"]{
+    --bg:#f0f8fc;--panel:#ffffff;--panel-2:#e4f2f9;--row:#ffffff;--row-alt:#f4fafd;
+    --row-hover:#d4ebf5;--line:#c0ddeb;--line-soft:#d8ecf4;--txt:#0b2942;--muted:#527087;
+    --accent:#1a8fd1;--accent-2:#1170aa;--ok:#15a89b;--bad:#e04358;--warn:#d99100;
+    --grad-1:#d4ecf7;--grad-2:#e0f2f9;
+  }
+  html[data-theme="ocean"] body{
+    background:
+      radial-gradient(ellipse at 15% 105%, rgba(140,205,235,.45) 0%, transparent 40%),
+      radial-gradient(ellipse at 85% 105%, rgba(160,220,240,.40) 0%, transparent 42%),
+      radial-gradient(circle at 50% 15%, rgba(200,235,250,.35) 0%, transparent 30%),
+      radial-gradient(1100px 560px at 15% -10%, #d4ecf7 0%, transparent 55%),
+      radial-gradient(900px 500px at 100% 0%, #e0f2f9 0%, transparent 50%),
+      var(--bg);
+  }
+  html[data-theme="ocean"] .card{
+    box-shadow:0 4px 6px -1px rgba(26,143,209,.07), 0 2px 4px -1px rgba(26,143,209,.05);
+    border-color:#d8ecf4;
+  }
+
+  /* ---- Lavender Fields ---- */
+  html[data-theme="lavender"]{
+    --bg:#f8f5fd;--panel:#ffffff;--panel-2:#f0eafa;--row:#ffffff;--row-alt:#faf7fe;
+    --row-hover:#e6dcf5;--line:#d8c9ee;--line-soft:#e8ddf5;--txt:#2a1e42;--muted:#6b5b8a;
+    --accent:#7c5cc4;--accent-2:#6547ab;--ok:#2eb87a;--bad:#dd4a8a;--warn:#d99100;
+    --grad-1:#e8dff7;--grad-2:#f1ebfa;
+  }
+  html[data-theme="lavender"] body{
+    background:
+      radial-gradient(circle at 88% 15%, rgba(200,180,235,.42) 0%, transparent 24%),
+      radial-gradient(circle at 12% 85%, rgba(215,195,240,.38) 0%, transparent 26%),
+      radial-gradient(circle at 45% 50%, rgba(220,205,245,.25) 0%, transparent 35%),
+      radial-gradient(1100px 560px at 15% -10%, #e8dff7 0%, transparent 55%),
+      radial-gradient(900px 500px at 100% 0%, #f1ebfa 0%, transparent 50%),
+      var(--bg);
+  }
+  html[data-theme="lavender"] .card{
+    box-shadow:0 4px 6px -1px rgba(124,92,196,.07), 0 2px 4px -1px rgba(124,92,196,.05);
+    border-color:#e8ddf5;
+  }
+
+  /* ---- Sunset (Peach Glow) ---- */
+  html[data-theme="sunset"]{
+    --bg:#fff8f2;--panel:#ffffff;--panel-2:#fff0e4;--row:#ffffff;--row-alt:#fffaf5;
+    --row-hover:#ffe4d0;--line:#f5d8bf;--line-soft:#fae8d4;--txt:#3d2415;--muted:#8a6a52;
+    --accent:#f0794a;--accent-2:#d45d2e;--ok:#2eb87a;--bad:#e04343;--warn:#c98a00;
+    --grad-1:#ffe0cc;--grad-2:#ffeede;
+  }
+  html[data-theme="sunset"] body{
+    background:
+      radial-gradient(circle at 12% 28%, rgba(255,200,150,.48) 0%, transparent 26%),
+      radial-gradient(circle at 88% 22%, rgba(255,180,170,.42) 0%, transparent 28%),
+      radial-gradient(circle at 50% 100%, rgba(255,210,180,.45) 0%, transparent 40%),
+      radial-gradient(1100px 560px at 15% -10%, #ffe0cc 0%, transparent 55%),
+      radial-gradient(900px 500px at 100% 0%, #ffeede 0%, transparent 50%),
+      var(--bg);
+  }
+  html[data-theme="sunset"] .card{
+    box-shadow:0 4px 6px -1px rgba(240,121,74,.07), 0 2px 4px -1px rgba(240,121,74,.05);
+    border-color:#fae8d4;
+  }
+
+  /* ---- Mint Fresh ---- */
+  html[data-theme="mint"]{
+    --bg:#f0fbf8;--panel:#ffffff;--panel-2:#e2f7f2;--row:#ffffff;--row-alt:#f4fcfa;
+    --row-hover:#d4f0ea;--line:#bedee0;--line-soft:#d8ece9;--txt:#0b2e2a;--muted:#4e6e6b;
+    --accent:#15a89b;--accent-2:#0d877c;--ok:#1ea550;--bad:#dd4a5c;--warn:#c99700;
+    --grad-1:#ccf2eb;--grad-2:#e0f8f3;
+  }
+  html[data-theme="mint"] body{
+    background:
+      radial-gradient(circle at 78% 15%, rgba(170,230,215,.42) 0%, transparent 24%),
+      radial-gradient(circle at 18% 82%, rgba(190,235,225,.38) 0%, transparent 26%),
+      radial-gradient(circle at 60% 50%, rgba(180,235,220,.22) 0%, transparent 32%),
+      radial-gradient(1100px 600px at 15% -10%, #ccf2eb 0%, transparent 55%),
+      radial-gradient(900px 500px at 100% 0%, #e0f8f3 0%, transparent 50%),
+      var(--bg);
+  }
+  html[data-theme="mint"] .card{
+    box-shadow:0 4px 6px -1px rgba(21,168,155,.07), 0 2px 4px -1px rgba(21,168,155,.05);
+    border-color:#d8ece9;
+  }
   *{box-sizing:border-box}
   html,body{height:100%}
   body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:radial-gradient(1100px 560px at 15% -10%,var(--grad-1) 0%,transparent 55%),radial-gradient(900px 500px at 100% 0%,var(--grad-2) 0%,transparent 50%),var(--bg);color:var(--txt);min-height:100vh;padding:28px 16px 40px;-webkit-font-smoothing:antialiased;font-size:15px;transition:background .2s,color .2s}
@@ -923,6 +1049,13 @@
             <button class="theme-opt" data-theme="solarized"><span class="swatch" style="background:linear-gradient(135deg,#fffbf0 50%,#268bd2 50%)"></span><span class="name">Solarized Light</span><svg class="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></button>
             <button class="theme-opt" data-theme="contrast"><span class="swatch" style="background:linear-gradient(135deg,#000000 50%,#ffcc00 50%)"></span><span class="name">High Contrast</span><svg class="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></button>
             <button class="theme-opt" data-theme="deepseek"><span class="swatch" style="background:linear-gradient(135deg,#f8fafc 50%,#4a6cf7 50%)"></span><span class="name">DeepSeek</span><svg class="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></button>
+			            <div class="menu-sep"></div>
+            <button class="theme-opt" data-theme="sakura"><span class="swatch" style="background:linear-gradient(135deg,#fff5f8 50%,#ff6b9d 50%)"></span><span class="name">Sakura (Pink)</span><svg class="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></button>
+            <button class="theme-opt" data-theme="forest"><span class="swatch" style="background:linear-gradient(135deg,#f2fbf3 50%,#2e9e5b 50%)"></span><span class="name">Forest (Green)</span><svg class="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></button>
+            <button class="theme-opt" data-theme="ocean"><span class="swatch" style="background:linear-gradient(135deg,#f0f8fc 50%,#1a8fd1 50%)"></span><span class="name">Ocean (Blue)</span><svg class="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></button>
+            <button class="theme-opt" data-theme="lavender"><span class="swatch" style="background:linear-gradient(135deg,#f8f5fd 50%,#7c5cc4 50%)"></span><span class="name">Lavender (Purple)</span><svg class="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></button>
+            <button class="theme-opt" data-theme="sunset"><span class="swatch" style="background:linear-gradient(135deg,#fff8f2 50%,#f0794a 50%)"></span><span class="name">Sunset (Peach)</span><svg class="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></button>
+            <button class="theme-opt" data-theme="mint"><span class="swatch" style="background:linear-gradient(135deg,#f0fbf8 50%,#15a89b 50%)"></span><span class="name">Mint (Teal)</span><svg class="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></button>
           </div>
           <div class="menu-view hidden" data-view="security">
             <button class="menu-back" data-back="main"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><span>Back</span></button>
