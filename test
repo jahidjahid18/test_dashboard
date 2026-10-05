@@ -1433,11 +1433,22 @@
     if(ok) showCopyChip(_lastPointer.x, _lastPointer.y - 10, 'Copied!');
     if(btn && btn.tagName==='BUTTON'){
       const o=btn.innerHTML;
+      const hadLabel=!!btn.querySelector('.btn-label');
+      const w=Math.round(btn.getBoundingClientRect().width);
+      btn.style.width=w+'px';
+      btn.style.justifyContent='center';
+      btn.style.overflow='hidden';
       btn.classList.add('copied');
       btn.innerHTML=ok
-        ? '<svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span class="btn-label"> Copied</span>'
-        : '<svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg><span class="btn-label"> Failed</span>';
-      setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML=o;},1100);
+        ? '<svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>'+(hadLabel?'<span class="btn-label"> Copied</span>':'')
+        : '<svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>'+(hadLabel?'<span class="btn-label"> Failed</span>':'');
+      setTimeout(()=>{
+        btn.classList.remove('copied');
+        btn.innerHTML=o;
+        btn.style.width='';
+        btn.style.justifyContent='';
+        btn.style.overflow='';
+      },1100);
     }
     return ok;
   }
@@ -2345,6 +2356,50 @@
     finally{if(b)b.classList.remove('saving');savingIds.delete(id);}
   }
 
+  async function reloadNoteFromDisk(id){
+    const n=notes.find(x=>x.id===id);
+    const h=noteFileHandles.get(id);
+    if(!n)return;
+    if(!h){showToast('This note is not linked to a file — nothing to reload');return;}
+    if(savingIds.has(id))return;
+
+    if(dirtyNotes.has(id)){
+      if(!confirm('This note has unsaved changes.\n\nDiscard them and reload from disk?'))return;
+      dirtyNotes.delete(id);
+      clearTimeout(autoSaveTimers.get(id));autoSaveTimers.delete(id);
+    }
+
+    try{
+      let perm='granted';
+      if(typeof h.queryPermission==='function'){
+        perm=await h.queryPermission({mode:'readwrite'});
+      }
+      if(perm!=='granted'&&typeof h.requestPermission==='function'){
+        perm=await h.requestPermission({mode:'readwrite'});
+      }
+      if(perm!=='granted'){showToast('Permission denied for that file');return;}
+
+      const f=await h.getFile();
+      const parsed=parseTxt(f.name, await f.text());
+      n.title=parsed.title||'';
+      n.body=esc(parsed.body).replace(/\r?\n/g,'<br>');
+      n.updatedAt=new Date().toISOString();
+
+      saveNotes();
+      markSaved(id);
+      renderNotes();
+
+      if(modalNoteId===id && !noteModal.classList.contains('hidden')){
+        noteModalTitle.value=n.title;
+        noteModalBody.innerHTML=n.body;
+        noteModalMeta.textContent='Edited '+relTime(n.updatedAt)+' · '+htmlToPlainText(n.body||'').length+' chars';
+      }
+      showToast('Reloaded from '+(f.name||'file'));
+    }catch(e){
+      showToast('Reload failed: '+(e.message||e.name||'unknown'));
+    }
+  }
+
   function updateAutoSaveUI(){if(!autoSaveToggle)return;autoSaveToggle.classList.toggle('active',autoSaveNotesEnabled);autoSaveToggle.title=autoSaveNotesEnabled?'Auto-save is ON — linked notes save 2s after typing stops':'Auto-save is OFF — click to enable';}
   function scheduleAutoSave(id){
     if(!autoSaveNotesEnabled)return;
@@ -2415,6 +2470,7 @@
     const fn=linked?(h.name||'file'):'';
     const st=linked?'Save to '+fn+' (Ctrl+S)':'Save — choose a location on disk (Ctrl+S)';
     const lk=linked?'<span class="note-link" title="Linked to '+esc(fn)+'">'+SVG_LINK+'</span>':'';
+    const rl=linked?'<button class="note-ico" data-act="reload-note" data-id="'+n.id+'" title="Reload from disk — pick up edits made in Notepad">'+SVG_RESET+'</button>':'';
     const fm=linked?'<span class="meta-file" title="'+esc(fn)+'">· '+esc(fn)+'</span>':'';
     return '<div class="note'+(n.pinned?' pinned':'')+(isDirty?' dirty':'')+'" data-id="'+n.id+'" data-color="'+n.color+'">'+
       '<div class="note-head">'+
@@ -2422,7 +2478,7 @@
         '<div class="note-title" contenteditable="true" data-id="'+n.id+'" data-placeholder="Note title…" spellcheck="false">'+esc(n.title)+'</div>'+
         '<div class="note-spacer"></div>'+
         '<button class="note-ico mini" data-act="expand" data-id="'+n.id+'" title="Open fullscreen">⤢</button>'+
-        lk+
+        lk+rl+
         '<button class="note-save '+(isDirty?'dirty':'')+'" data-act="save-note" data-id="'+n.id+'" title="'+esc(st)+'">'+SVG_FLOPPY+'</button>'+
         '<button class="note-ico" data-act="pick-color" data-id="'+n.id+'" title="Change theme">'+SVG_PALETTE+'</button>'+
         '<button class="note-ico del" data-act="del-note" data-id="'+n.id+'" title="Delete">'+SVG_TRASH+'</button>'+
@@ -2610,6 +2666,7 @@
     const id=el.dataset.id,a=el.dataset.act;const n=notes.find(x=>x.id===id);if(!n)return;
     switch(a){
       case'save-note':await saveSingleNote(id);break;
+      case'reload-note':await reloadNoteFromDisk(id);break;
       case'pin-note':if(dirtyNotes.has(id))saveNotes();n.pinned=!n.pinned;n.updatedAt=new Date().toISOString();saveNotes();renderNotes();break;
       case'pick-color':if(dirtyNotes.has(id))saveNotes();showColorPicker(el,id);break;
       case'expand':openNoteModal(id);break;
