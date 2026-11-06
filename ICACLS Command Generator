@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ICACLS Command Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -16,7 +19,6 @@
             --border: #e2e8f0;
             --success: #10b981;
             --success-hover: #059669;
-            --danger: #ef4444;
         }
 
         * {
@@ -24,8 +26,7 @@
         }
 
         body {
-            /* Swapped to standard system fonts for 100% offline safety */
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', sans-serif;
             margin: 0;
             padding: 40px 20px;
             background-color: var(--bg-color);
@@ -41,24 +42,6 @@
             border-radius: 12px;
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
             overflow: hidden;
-        }
-
-        .header {
-            padding: 30px 30px 20px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .header h1 {
-            margin: 0 0 8px 0;
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--text-main);
-        }
-
-        .header p {
-            margin: 0;
-            color: var(--text-muted);
-            font-size: 14px;
         }
 
         /* Modern Tabs */
@@ -92,7 +75,7 @@
             background-color: var(--card-bg);
         }
 
-        /* Tab Content */
+        /* Tab Content layout */
         .tab-content {
             display: none;
             padding: 30px;
@@ -103,6 +86,7 @@
             display: flex;
             gap: 30px;
             flex-wrap: wrap;
+            align-items: stretch;
         }
 
         @keyframes fadeIn {
@@ -122,7 +106,6 @@
             margin: 0 0 15px 0;
             font-size: 16px;
             font-weight: 600;
-            color: var(--text-main);
         }
 
         /* Input Area */
@@ -130,7 +113,8 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
-            max-height: 320px;
+            flex: 1;
+            min-height: 250px;
             overflow-y: auto;
             padding-right: 8px;
             margin-bottom: 15px;
@@ -173,13 +157,14 @@
 
         input[type="text"]::placeholder {
             color: #94a3b8;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
         /* Output Area */
         textarea {
             width: 100%;
-            height: 400px;
+            flex: 1;
+            min-height: 250px;
             padding: 15px;
             font-family: 'Courier New', Courier, monospace;
             font-size: 14px;
@@ -188,8 +173,9 @@
             background-color: #f8fafc;
             border: 1px solid var(--border);
             border-radius: 6px;
-            resize: vertical;
+            resize: none;
             box-sizing: border-box;
+            margin-bottom: 15px;
         }
 
         textarea:focus {
@@ -197,11 +183,14 @@
             border-color: var(--primary);
         }
 
+        .actions-wrapper {
+            margin-top: auto;
+        }
+
         /* Buttons */
         .btn-group {
             display: flex;
             gap: 10px;
-            margin-top: 10px;
         }
 
         .btn {
@@ -259,7 +248,6 @@
             background-color: var(--success);
             color: white;
             width: 100%;
-            margin-top: 15px;
         }
 
         .btn-copy:hover {
@@ -275,11 +263,6 @@
 <body>
 
     <div class="app-container">
-        <div class="header">
-            <h1>ICACLS Command Generator</h1>
-            <p>Generate Windows file permission commands instantly.</p>
-        </div>
-
         <!-- Tabs -->
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab(event, 'auth-tab')">Authenticated Users</button>
@@ -288,10 +271,11 @@
 
         <!-- TAB 1: Authenticated Users -->
         <div id="auth-tab" class="tab-content active">
+            <!-- Left Pane -->
             <div class="pane">
                 <h3>File Paths</h3>
                 <div class="input-list" id="auth-input-list">
-                    <input type="text" placeholder="Path 1 (e.g., c:\temp\abc.exe)">
+                    <input type="text" placeholder="Path 1 (e.g., C:\vfcompat.dll)">
                     <input type="text" placeholder="Path 2">
                     <input type="text" placeholder="Path 3">
                     <input type="text" placeholder="Path 4">
@@ -300,25 +284,32 @@
                 
                 <button class="btn btn-add" onclick="addRow('auth-input-list')">+ Add Another Path</button>
                 
-                <div class="btn-group">
-                    <button class="btn btn-generate" onclick="generate('Authenticated Users', 'auth-input-list', 'auth-output')">Generate Commands</button>
-                    <button class="btn btn-reset" onclick="resetTab('auth-input-list', 'auth-output')">Reset</button>
+                <div class="actions-wrapper">
+                    <div class="btn-group">
+                        <button class="btn btn-generate" onclick="generate('Authenticated Users', 'auth-input-list', 'auth-output')">Generate Commands</button>
+                        <button class="btn btn-reset" onclick="resetTab('auth-input-list', 'auth-output')">Reset</button>
+                    </div>
                 </div>
             </div>
 
+            <!-- Right Pane -->
             <div class="pane">
                 <h3>Generated Commands</h3>
                 <textarea id="auth-output" readonly placeholder="Commands will appear here..."></textarea>
-                <button class="btn btn-copy" onclick="copyOutput('auth-output', this)">Copy to Clipboard</button>
+                
+                <div class="actions-wrapper">
+                    <button class="btn btn-copy" onclick="copyOutput('auth-output', this)">Copy to Clipboard</button>
+                </div>
             </div>
         </div>
 
         <!-- TAB 2: Standard Users -->
         <div id="user-tab" class="tab-content">
+            <!-- Left Pane -->
             <div class="pane">
                 <h3>File Paths</h3>
                 <div class="input-list" id="user-input-list">
-                    <input type="text" placeholder="Path 1 (e.g., c:\temp\abc.exe)">
+                    <input type="text" placeholder="Path 1 (e.g., C:\vfcompat.dll)">
                     <input type="text" placeholder="Path 2">
                     <input type="text" placeholder="Path 3">
                     <input type="text" placeholder="Path 4">
@@ -327,21 +318,28 @@
                 
                 <button class="btn btn-add" onclick="addRow('user-input-list')">+ Add Another Path</button>
                 
-                <div class="btn-group">
-                    <button class="btn btn-generate" onclick="generate('Users', 'user-input-list', 'user-output')">Generate Commands</button>
-                    <button class="btn btn-reset" onclick="resetTab('user-input-list', 'user-output')">Reset</button>
+                <div class="actions-wrapper">
+                    <div class="btn-group">
+                        <button class="btn btn-generate" onclick="generate('Users', 'user-input-list', 'user-output')">Generate Commands</button>
+                        <button class="btn btn-reset" onclick="resetTab('user-input-list', 'user-output')">Reset</button>
+                    </div>
                 </div>
             </div>
 
+            <!-- Right Pane -->
             <div class="pane">
                 <h3>Generated Commands</h3>
                 <textarea id="user-output" readonly placeholder="Commands will appear here..."></textarea>
-                <button class="btn btn-copy" onclick="copyOutput('user-output', this)">Copy to Clipboard</button>
+                
+                <div class="actions-wrapper">
+                    <button class="btn btn-copy" onclick="copyOutput('user-output', this)">Copy to Clipboard</button>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
+        // --- Tab Switching ---
         function switchTab(evt, tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
@@ -353,6 +351,7 @@
             evt.currentTarget.classList.add('active');
         }
 
+        // --- Add New Input Row ---
         function addRow(containerId) {
             const container = document.getElementById(containerId);
             const newInput = document.createElement('input');
@@ -363,16 +362,20 @@
             newInput.focus();
         }
 
+        // --- Reset Function ---
         function resetTab(containerId, outputId) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
+            
             for (let i = 1; i <= 5; i++) {
                 const input = document.createElement('input');
                 input.type = 'text';
-                input.placeholder = i === 1 ? 'Path 1 (e.g., c:\\temp\\abc.exe)' : `Path ${i}`;
+                input.placeholder = i === 1 ? 'Path 1 (e.g., C:\\vfcompat.dll)' : `Path ${i}`;
                 container.appendChild(input);
             }
+            
             document.getElementById(outputId).value = '';
+            
             const copyBtn = document.querySelector(`button[onclick*="${outputId}"]`);
             if(copyBtn) {
                 copyBtn.innerText = "Copy to Clipboard";
@@ -380,6 +383,7 @@
             }
         }
 
+        // --- Generate Commands ---
         function generate(groupName, containerId, outputId) {
             let output = '';
             let hasPaths = false;
@@ -388,7 +392,7 @@
 
             inputs.forEach(input => {
                 let rawValue = input.value.trim();
-                let path = rawValue.replace(/"/g, '');
+                let path = rawValue.replace(/"/g, ''); // Strip quotes
 
                 if (path !== '') {
                     hasPaths = true;
@@ -405,25 +409,33 @@
                 outputBox.value = "⚠️ Please enter at least one file path.";
                 return;
             }
+
             outputBox.value = output.trim();
         }
 
+        // --- Copy to Clipboard ---
         function copyOutput(outputId, btnElement) {
             const outputText = document.getElementById(outputId).value;
-            if(!outputText || outputText.startsWith("⚠️")) return; 
+            
+            if(!outputText || outputText.startsWith("⚠️")) {
+                return; 
+            }
 
             navigator.clipboard.writeText(outputText).then(() => {
                 const originalText = btnElement.innerText;
                 btnElement.innerText = "✔️ Copied Successfully";
                 btnElement.classList.add('copied');
+                
                 setTimeout(() => {
                     btnElement.innerText = originalText;
                     btnElement.classList.remove('copied');
                 }, 2000);
+                
             }).catch(err => {
-                btnElement.innerText = "❌ Copy Failed (Try manual select)";
+                btnElement.innerText = "❌ Copy Failed";
             });
         }
     </script>
+
 </body>
 </html>
