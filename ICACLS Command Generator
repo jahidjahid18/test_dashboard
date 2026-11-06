@@ -19,6 +19,9 @@
             --border: #e2e8f0;
             --success: #10b981;
             --success-hover: #059669;
+            --warning-bg: #fef08a; /* Light Yellow */
+            --warning-border: #facc15; /* Darker Yellow */
+            --warning-text: #854d0e;
         }
 
         * {
@@ -128,22 +131,22 @@
         }
 
         /* Custom Scrollbar */
-        .input-list::-webkit-scrollbar {
+        .input-list::-webkit-scrollbar, #mobex-output-container::-webkit-scrollbar {
             width: 6px;
         }
-        .input-list::-webkit-scrollbar-track {
+        .input-list::-webkit-scrollbar-track, #mobex-output-container::-webkit-scrollbar-track {
             background: #f1f1f1;
             border-radius: 4px;
         }
-        .input-list::-webkit-scrollbar-thumb {
+        .input-list::-webkit-scrollbar-thumb, #mobex-output-container::-webkit-scrollbar-thumb {
             background: #cbd5e1;
             border-radius: 4px;
         }
-        .input-list::-webkit-scrollbar-thumb:hover {
+        .input-list::-webkit-scrollbar-thumb:hover, #mobex-output-container::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
 
-        input[type="text"], textarea {
+        input[type="text"], input[type="number"], textarea {
             width: 100%;
             padding: 12px 15px;
             font-family: 'Courier New', Courier, monospace;
@@ -155,25 +158,36 @@
             transition: all 0.2s ease;
         }
 
-        input[type="text"]:focus, textarea:focus {
+        input[type="text"]:focus, input[type="number"]:focus, textarea:focus {
             outline: none;
             border-color: var(--primary);
             background-color: #ffffff;
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
 
-        input[type="text"]::placeholder, textarea::placeholder {
+        input::placeholder, textarea::placeholder {
             color: #94a3b8;
             font-family: 'Inter', sans-serif;
         }
 
         /* Specific Textarea Overrides */
         textarea {
+            line-height: 1.5;
+            resize: vertical;
+        }
+
+        .standard-output {
             flex: 1;
             min-height: 250px;
-            line-height: 1.5;
             resize: none;
             margin-bottom: 15px;
+        }
+
+        /* Yellow state for standard textarea */
+        .standard-output.copied {
+            background-color: var(--warning-bg);
+            border-color: var(--warning-border);
+            color: var(--warning-text);
         }
 
         /* Mobex specific layout */
@@ -186,9 +200,79 @@
         }
         
         .mobex-input-group textarea {
+            min-height: 120px;
+        }
+
+        .batch-size-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+
+        .batch-size-wrapper label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .batch-size-wrapper input {
+            width: 80px;
+            padding: 8px 12px;
+        }
+
+        /* Batch Output Blocks */
+        #mobex-output-container {
             flex: 1;
-            min-height: 160px;
-            margin-bottom: 0;
+            overflow-y: auto;
+            max-height: 550px;
+            padding-right: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .batch-block {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        /* Copied State Styles */
+        .batch-block.copied {
+            background-color: var(--warning-bg);
+            border-color: var(--warning-border);
+        }
+
+        .batch-block h4 {
+            margin: 0;
+            font-size: 14px;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .batch-block.copied h4 {
+            color: var(--warning-text);
+        }
+
+        .batch-block textarea {
+            min-height: 120px;
+            font-size: 13px;
+            background-color: #ffffff;
+        }
+
+        .batch-block.copied textarea {
+            background-color: #fefce8;
+            border-color: var(--warning-border);
+            color: var(--warning-text);
         }
 
         .actions-wrapper {
@@ -243,7 +327,7 @@
 
         .btn-reset {
             background-color: #f1f5f9;
-            color: #64748b;
+            color: var(--text-muted);
             border: 1px solid var(--border);
         }
 
@@ -262,8 +346,15 @@
             background-color: var(--success-hover);
         }
 
-        .btn-copy.copied {
-            background-color: var(--primary);
+        /* Copied Button Style (Applies to both standard and Mobex) */
+        .btn-copy.copied, .batch-block.copied .btn-copy {
+            background-color: var(--warning-border);
+            color: var(--warning-text);
+        }
+
+        .btn-small {
+            padding: 10px 15px;
+            font-size: 13px;
         }
         
     </style>
@@ -302,9 +393,10 @@
 
             <div class="pane">
                 <h3>Generated Commands</h3>
-                <textarea id="auth-output" readonly placeholder="Commands will appear here..."></textarea>
+                <textarea id="auth-output" class="standard-output" readonly placeholder="Commands will appear here..."></textarea>
                 <div class="actions-wrapper">
-                    <button class="btn btn-copy" onclick="copyOutput('auth-output', this)">Copy to Clipboard</button>
+                    <!-- Added unique ID here -->
+                    <button id="auth-copy-btn" class="btn btn-copy" onclick="copyOutput('auth-output', this)">Copy to Clipboard</button>
                 </div>
             </div>
         </div>
@@ -333,9 +425,10 @@
 
             <div class="pane">
                 <h3>Generated Commands</h3>
-                <textarea id="user-output" readonly placeholder="Commands will appear here..."></textarea>
+                <textarea id="user-output" class="standard-output" readonly placeholder="Commands will appear here..."></textarea>
                 <div class="actions-wrapper">
-                    <button class="btn btn-copy" onclick="copyOutput('user-output', this)">Copy to Clipboard</button>
+                    <!-- Added unique ID here -->
+                    <button id="user-copy-btn" class="btn btn-copy" onclick="copyOutput('user-output', this)">Copy to Clipboard</button>
                 </div>
             </div>
         </div>
@@ -352,6 +445,14 @@
                         <span class="sub-label">2. Paste New VM List (One per line)</span>
                         <textarea id="mobex-vms" placeholder="vm-server-01.domain.local&#10;vm-server-02.domain.local"></textarea>
                     </div>
+                    <div class="batch-size-wrapper">
+                        <label for="mobex-batch-size">Split into batches of:</label>
+                        <input type="number" id="mobex-batch-size" value="10" min="1">
+                        <span style="font-size: 13px; color: var(--text-muted);">(For MobaXterm Free version limits)</span>
+                    </div>
+                    <div style="font-size: 12px; color: var(--text-muted);">
+                        * Copied batches turn yellow and persist even if you refresh the page.
+                    </div>
                 </div>
                 
                 <div class="actions-wrapper">
@@ -363,10 +464,11 @@
             </div>
 
             <div class="pane">
-                <h3>Generated Mobex Export</h3>
-                <textarea id="mobex-output" readonly placeholder="Generated Mobex export file will appear here..."></textarea>
-                <div class="actions-wrapper">
-                    <button class="btn btn-copy" onclick="copyOutput('mobex-output', this)">Copy to Clipboard</button>
+                <h3>Generated Batches</h3>
+                <div id="mobex-output-container">
+                    <div style="color: #94a3b8; font-size: 14px; text-align: center; margin-top: 50px;">
+                        Generated batches will appear here...
+                    </div>
                 </div>
             </div>
         </div>
@@ -385,6 +487,36 @@
             document.getElementById(tabId).classList.add('active');
             evt.currentTarget.classList.add('active');
         }
+
+        // --- Load State on Page Load ---
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('mobex-template').value = localStorage.getItem('mobex_tpl') || '';
+            document.getElementById('mobex-vms').value = localStorage.getItem('mobex_vms') || '';
+            document.getElementById('mobex-batch-size').value = localStorage.getItem('mobex_size') || '10';
+
+            const savedBatches = localStorage.getItem('mobex_batches_data');
+            if (savedBatches) {
+                try {
+                    const chunks = JSON.parse(savedBatches);
+                    renderBatches(chunks);
+                } catch(e) {
+                    console.error("Error loading saved batches", e);
+                }
+            }
+
+            // Restore ICACLS Copied States using specific IDs
+            ['auth-output', 'user-output'].forEach(outputId => {
+                if (localStorage.getItem('icacls_copied_' + outputId) === 'true') {
+                    const outputBox = document.getElementById(outputId);
+                    const copyBtn = document.getElementById(outputId.replace('-output', '-copy-btn'));
+                    if (outputBox && copyBtn) {
+                        outputBox.classList.add('copied');
+                        copyBtn.classList.add('copied');
+                        copyBtn.innerText = "✔️ Copied Successfully";
+                    }
+                }
+            });
+        });
 
         // --- ICACLS Functions ---
         function addRow(containerId) {
@@ -408,13 +540,18 @@
                 container.appendChild(input);
             }
             
-            document.getElementById(outputId).value = '';
+            const outputBox = document.getElementById(outputId);
+            outputBox.value = '';
+            outputBox.classList.remove('copied');
             
-            const copyBtn = document.querySelector(`button[onclick*="${outputId}"]`);
+            // Use the specific ID to find the correct copy button
+            const copyBtn = document.getElementById(outputId.replace('-output', '-copy-btn'));
             if(copyBtn) {
                 copyBtn.innerText = "Copy to Clipboard";
                 copyBtn.classList.remove('copied');
             }
+            
+            localStorage.removeItem('icacls_copied_' + outputId);
         }
 
         function generate(groupName, containerId, outputId) {
@@ -438,6 +575,16 @@
             });
 
             const outputBox = document.getElementById(outputId);
+            
+            // Reset copied state when generating new content using specific ID
+            outputBox.classList.remove('copied');
+            const copyBtn = document.getElementById(outputId.replace('-output', '-copy-btn'));
+            if(copyBtn) {
+                copyBtn.innerText = "Copy to Clipboard";
+                copyBtn.classList.remove('copied');
+            }
+            localStorage.removeItem('icacls_copied_' + outputId);
+
             if (!hasPaths) {
                 outputBox.value = "⚠️ Please enter at least one file path.";
                 return;
@@ -447,12 +594,24 @@
         }
 
         // --- Mobex Functions ---
+        document.getElementById('mobex-template').addEventListener('input', (e) => localStorage.setItem('mobex_tpl', e.target.value));
+        document.getElementById('mobex-vms').addEventListener('input', (e) => localStorage.setItem('mobex_vms', e.target.value));
+        document.getElementById('mobex-batch-size').addEventListener('input', (e) => localStorage.setItem('mobex_size', e.target.value));
+
         function generateMobex() {
             const templateText = document.getElementById('mobex-template').value.trim();
             const vmsText = document.getElementById('mobex-vms').value.trim();
+            let batchSize = parseInt(document.getElementById('mobex-batch-size').value);
+            
+            if (isNaN(batchSize) || batchSize < 1) {
+                batchSize = 10; 
+            }
+
+            const outputContainer = document.getElementById('mobex-output-container');
+            outputContainer.innerHTML = ''; 
 
             if (!templateText || !vmsText) {
-                document.getElementById('mobex-output').value = "⚠️ Please provide both the export template and the new VM list.";
+                outputContainer.innerHTML = '<div style="color: #ef4444; font-size: 14px; text-align: center; margin-top: 50px;">⚠️ Please provide both the export template and the new VM list.</div>';
                 return;
             }
 
@@ -460,11 +619,9 @@
             let header = [];
             let templateLine = null;
 
-            // Find the bookmark line (contains #91#4%)
             for (let i = 0; i < lines.length; i++) {
                 if (lines[i].includes('#91#4%')) {
                     templateLine = lines[i];
-                    // Anything before this line is considered the header
                     for (let j = 0; j < i; j++) {
                         header.push(lines[j]);
                     }
@@ -473,86 +630,154 @@
             }
 
             if (!templateLine) {
-                document.getElementById('mobex-output').value = "⚠️ Error: Could not find a valid Mobex bookmark line (containing '#91#4%') in the provided file.";
+                outputContainer.innerHTML = '<div style="color: #ef4444; font-size: 14px; text-align: center; margin-top: 50px;">⚠️ Error: Could not find a valid Mobex bookmark line.</div>';
                 return;
             }
 
-            // Parse the template line
             const equalsIndex = templateLine.indexOf('=');
             const settings = templateLine.substring(equalsIndex + 1);
             
-            // Extract the old hostname (everything between the first two % signs after #91#4%)
             const hostMatch = settings.match(/#91#4%([^%]+)%/);
             if (!hostMatch) {
-                document.getElementById('mobex-output').value = "⚠️ Error: Could not extract hostname from the template line.";
+                outputContainer.innerHTML = '<div style="color: #ef4444; font-size: 14px; text-align: center; margin-top: 50px;">⚠️ Error: Could not extract hostname from template.</div>';
                 return;
             }
             const oldHostname = hostMatch[1];
 
-            // Extract the username (usually in parentheses in the display name)
-            let username = "aaa"; // Default fallback
+            let username = "aaa"; 
             const userMatch = templateLine.match(/\(([^)]+)\)/);
             if (userMatch) {
                 username = userMatch[1];
             }
 
-            // Process VM list
             const vms = vmsText.split('\n').map(v => v.trim()).filter(v => v);
             if (vms.length === 0) return;
 
-            let newLines = [];
-
+            let allLines = [];
             vms.forEach(vm => {
-                // Create new settings by replacing the old hostname
                 let newSettings = settings.split(`%${oldHostname}%`).join(`%${vm}%`);
-                
-                // Create new display name (e.g., "newvm.domain.com ([aaa])")
                 let newDisplayName = `${vm} (${username})`;
-                
-                newLines.push(`${newDisplayName}=${newSettings}`);
+                allLines.push(`${newDisplayName}=${newSettings}`);
             });
 
-            // Reconstruct the file
-            let output = "";
-            if (header.length > 0) {
-                output += header.join('\n') + '\n'; // Header remains exactly as pasted
+            let chunks = [];
+            for (let i = 0; i < allLines.length; i += batchSize) {
+                let chunkLines = allLines.slice(i, i + batchSize);
+                let textContent = "";
+                if (i === 0 && header.length > 0) {
+                    textContent += header.join('\n') + '\n';
+                }
+                textContent += chunkLines.join('\n');
+                chunks.push(textContent);
             }
 
-            output += newLines.join('\n');
+            Object.keys(localStorage).forEach(key => {
+                if (key.startsWith('mobex_copied_')) {
+                    localStorage.removeItem(key);
+                }
+            });
 
-            document.getElementById('mobex-output').value = output;
+            localStorage.setItem('mobex_batches_data', JSON.stringify(chunks));
+            renderBatches(chunks);
+        }
+
+        function renderBatches(chunks) {
+            const outputContainer = document.getElementById('mobex-output-container');
+            outputContainer.innerHTML = '';
+
+            chunks.forEach((textContent, index) => {
+                let batchNumber = index + 1;
+                let isCopied = localStorage.getItem('mobex_copied_' + batchNumber) === 'true';
+
+                const block = document.createElement('div');
+                block.className = 'batch-block' + (isCopied ? ' copied' : '');
+
+                const title = document.createElement('h4');
+                let lineCount = textContent.split('\n').filter(l => l.includes('=')).length;
+                let copiedBadge = isCopied ? '<span style="color: #ca8a04; font-weight: bold; margin-left: 10px;">(✔️ Copied)</span>' : '';
+                
+                title.innerHTML = `Batch ${batchNumber} <span>(${lineCount} Sessions)</span>${copiedBadge}`;
+                
+                const textarea = document.createElement('textarea');
+                textarea.readOnly = true;
+                textarea.value = textContent;
+
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'btn btn-copy btn-small';
+                
+                if (isCopied) {
+                    copyBtn.innerText = '✔️ Copied!';
+                } else {
+                    copyBtn.innerText = 'Copy this Batch';
+                }
+
+                copyBtn.onclick = function() { 
+                    copySpecificText(textContent, copyBtn, batchNumber); 
+                };
+
+                block.appendChild(title);
+                block.appendChild(textarea);
+                block.appendChild(copyBtn);
+                outputContainer.appendChild(block);
+            });
         }
 
         function resetMobex() {
             document.getElementById('mobex-template').value = '';
             document.getElementById('mobex-vms').value = '';
-            document.getElementById('mobex-output').value = '';
+            document.getElementById('mobex-batch-size').value = '10';
             
-            const copyBtn = document.querySelector(`button[onclick*="mobex-output"]`);
-            if(copyBtn) {
-                copyBtn.innerText = "Copy to Clipboard";
-                copyBtn.classList.remove('copied');
-            }
+            localStorage.removeItem('mobex_tpl');
+            localStorage.removeItem('mobex_vms');
+            localStorage.removeItem('mobex_size');
+            localStorage.removeItem('mobex_batches_data');
+            
+            Object.keys(localStorage).forEach(key => {
+                if (key.startsWith('mobex_copied_')) {
+                    localStorage.removeItem(key);
+                }
+            });
+
+            const outputContainer = document.getElementById('mobex-output-container');
+            outputContainer.innerHTML = '<div style="color: #94a3b8; font-size: 14px; text-align: center; margin-top: 50px;">Generated batches will appear here...</div>';
         }
 
         // --- Shared Functions ---
         function copyOutput(outputId, btnElement) {
-            const outputText = document.getElementById(outputId).value;
+            const outputBox = document.getElementById(outputId);
+            const outputText = outputBox.value;
             
             if(!outputText || outputText.startsWith("⚠️")) {
                 return; 
             }
 
             navigator.clipboard.writeText(outputText).then(() => {
-                const originalText = btnElement.innerText;
                 btnElement.innerText = "✔️ Copied Successfully";
                 btnElement.classList.add('copied');
+                outputBox.classList.add('copied');
                 
-                setTimeout(() => {
-                    btnElement.innerText = originalText;
-                    btnElement.classList.remove('copied');
-                }, 2000);
+                localStorage.setItem('icacls_copied_' + outputId, 'true');
                 
+            }).catch(err => {
+                btnElement.innerText = "❌ Copy Failed";
+            });
+        }
+
+        function copySpecificText(text, btnElement, batchNumber = null) {
+            navigator.clipboard.writeText(text).then(() => {
+                btnElement.innerText = "✔️ Copied!";
+                btnElement.classList.add('copied');
+
+                if (batchNumber !== null) {
+                    localStorage.setItem('mobex_copied_' + batchNumber, 'true');
+                    const block = btnElement.closest('.batch-block');
+                    block.classList.add('copied');
+                    
+                    const title = block.querySelector('h4');
+                    if(!title.innerHTML.includes('(✔️ Copied)')) {
+                        title.innerHTML += '<span style="color: #ca8a04; font-weight: bold; margin-left: 10px;">(✔️ Copied)</span>';
+                    }
+                }
             }).catch(err => {
                 btnElement.innerText = "❌ Copy Failed";
             });
