@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICACLS Command Generator</title>
+    
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --success-hover: #059669;
+            --danger: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            /* Swapped to standard system fonts for 100% offline safety */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 1200px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            overflow: hidden;
+        }
+
+        .header {
+            padding: 30px 30px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header h1 {
+            margin: 0 0 8px 0;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .header p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* Modern Tabs */
+        .tabs {
+            display: flex;
+            padding: 0 30px;
+            border-bottom: 1px solid var(--border);
+            background: #f8fafc;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 16px 24px;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+            background-color: var(--card-bg);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            padding: 30px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Layout Panes */
+        .pane {
+            flex: 1;
+            min-width: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pane h3 {
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        /* Input Area */
+        .input-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 320px;
+            overflow-y: auto;
+            padding-right: 8px;
+            margin-bottom: 15px;
+        }
+
+        /* Custom Scrollbar */
+        .input-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        .input-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        .input-list::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .input-list::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            color: var(--text-main);
+            background-color: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        input[type="text"]::placeholder {
+            color: #94a3b8;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Output Area */
+        textarea {
+            width: 100%;
+            height: 400px;
+            padding: 15px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #334155;
+            background-color: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Buttons */
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-add {
+            background-color: #ffffff;
+            color: var(--primary);
+            border: 1px dashed var(--primary);
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .btn-add:hover {
+            background-color: #eff6ff;
+        }
+
+        .btn-generate {
+            background-color: var(--primary);
+            color: white;
+            flex: 1;
+        }
+
+        .btn-generate:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-reset {
+            background-color: #f1f5f9;
+            color: #64748b;
+            border: 1px solid var(--border);
+        }
+
+        .btn-reset:hover {
+            background-color: #e2e8f0;
+            color: var(--text-main);
+        }
+
+        .btn-copy {
+            background-color: var(--success);
+            color: white;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .btn-copy:hover {
+            background-color: var(--success-hover);
+        }
+
+        .btn-copy.copied {
+            background-color: var(--primary);
+        }
+        
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="header">
+            <h1>ICACLS Command Generator</h1>
+            <p>Generate Windows file permission commands instantly.</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(event, 'auth-tab')">Authenticated Users</button>
+            <button class="tab-btn" onclick="switchTab(event, 'user-tab')">Standard Users</button>
+        </div>
+
+        <!-- TAB 1: Authenticated Users -->
+        <div id="auth-tab" class="tab-content active">
+            <div class="pane">
+                <h3>File Paths</h3>
+                <div class="input-list" id="auth-input-list">
+                    <input type="text" placeholder="Path 1 (e.g., c:\temp\abc.exe)">
+                    <input type="text" placeholder="Path 2">
+                    <input type="text" placeholder="Path 3">
+                    <input type="text" placeholder="Path 4">
+                    <input type="text" placeholder="Path 5">
+                </div>
+                
+                <button class="btn btn-add" onclick="addRow('auth-input-list')">+ Add Another Path</button>
+                
+                <div class="btn-group">
+                    <button class="btn btn-generate" onclick="generate('Authenticated Users', 'auth-input-list', 'auth-output')">Generate Commands</button>
+                    <button class="btn btn-reset" onclick="resetTab('auth-input-list', 'auth-output')">Reset</button>
+                </div>
+            </div>
+
+            <div class="pane">
+                <h3>Generated Commands</h3>
+                <textarea id="auth-output" readonly placeholder="Commands will appear here..."></textarea>
+                <button class="btn btn-copy" onclick="copyOutput('auth-output', this)">Copy to Clipboard</button>
+            </div>
+        </div>
+
+        <!-- TAB 2: Standard Users -->
+        <div id="user-tab" class="tab-content">
+            <div class="pane">
+                <h3>File Paths</h3>
+                <div class="input-list" id="user-input-list">
+                    <input type="text" placeholder="Path 1 (e.g., c:\temp\abc.exe)">
+                    <input type="text" placeholder="Path 2">
+                    <input type="text" placeholder="Path 3">
+                    <input type="text" placeholder="Path 4">
+                    <input type="text" placeholder="Path 5">
+                </div>
+                
+                <button class="btn btn-add" onclick="addRow('user-input-list')">+ Add Another Path</button>
+                
+                <div class="btn-group">
+                    <button class="btn btn-generate" onclick="generate('Users', 'user-input-list', 'user-output')">Generate Commands</button>
+                    <button class="btn btn-reset" onclick="resetTab('user-input-list', 'user-output')">Reset</button>
+                </div>
+            </div>
+
+            <div class="pane">
+                <h3>Generated Commands</h3>
+                <textarea id="user-output" readonly placeholder="Commands will appear here..."></textarea>
+                <button class="btn btn-copy" onclick="copyOutput('user-output', this)">Copy to Clipboard</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(evt, tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+
+        function addRow(containerId) {
+            const container = document.getElementById(containerId);
+            const newInput = document.createElement('input');
+            newInput.type = 'text';
+            newInput.placeholder = 'Additional path...';
+            container.appendChild(newInput);
+            container.scrollTop = container.scrollHeight;
+            newInput.focus();
+        }
+
+        function resetTab(containerId, outputId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            for (let i = 1; i <= 5; i++) {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.placeholder = i === 1 ? 'Path 1 (e.g., c:\\temp\\abc.exe)' : `Path ${i}`;
+                container.appendChild(input);
+            }
+            document.getElementById(outputId).value = '';
+            const copyBtn = document.querySelector(`button[onclick*="${outputId}"]`);
+            if(copyBtn) {
+                copyBtn.innerText = "Copy to Clipboard";
+                copyBtn.classList.remove('copied');
+            }
+        }
+
+        function generate(groupName, containerId, outputId) {
+            let output = '';
+            let hasPaths = false;
+
+            const inputs = document.querySelectorAll(`#${containerId} input[type="text"]`);
+
+            inputs.forEach(input => {
+                let rawValue = input.value.trim();
+                let path = rawValue.replace(/"/g, '');
+
+                if (path !== '') {
+                    hasPaths = true;
+                    output += `icacls "${path}"\n`;
+                    output += `icacls "${path}" /inheritance:d\n`;
+                    output += `icacls "${path}" /remove "${groupName}"\n`;
+                    output += `icacls "${path}" /grant:r "${groupName}":(RX)\n`;
+                    output += `icacls "${path}"\n\n`;
+                }
+            });
+
+            const outputBox = document.getElementById(outputId);
+            if (!hasPaths) {
+                outputBox.value = "⚠️ Please enter at least one file path.";
+                return;
+            }
+            outputBox.value = output.trim();
+        }
+
+        function copyOutput(outputId, btnElement) {
+            const outputText = document.getElementById(outputId).value;
+            if(!outputText || outputText.startsWith("⚠️")) return; 
+
+            navigator.clipboard.writeText(outputText).then(() => {
+                const originalText = btnElement.innerText;
+                btnElement.innerText = "✔️ Copied Successfully";
+                btnElement.classList.add('copied');
+                setTimeout(() => {
+                    btnElement.innerText = originalText;
+                    btnElement.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                btnElement.innerText = "❌ Copy Failed (Try manual select)";
+            });
+        }
+    </script>
+</body>
+</html>
