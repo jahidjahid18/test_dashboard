@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ICACLS Command Generator</title>
+    <title>IT Utility Command Generator</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -103,9 +103,16 @@
         }
 
         .pane h3 {
-            margin: 0 0 15px 0;
+            margin: 0 0 10px 0;
             font-size: 16px;
             font-weight: 600;
+        }
+
+        .sub-label {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            display: block;
         }
 
         /* Input Area */
@@ -136,7 +143,7 @@
             background: #94a3b8;
         }
 
-        input[type="text"] {
+        input[type="text"], textarea {
             width: 100%;
             padding: 12px 15px;
             font-family: 'Courier New', Courier, monospace;
@@ -148,39 +155,40 @@
             transition: all 0.2s ease;
         }
 
-        input[type="text"]:focus {
+        input[type="text"]:focus, textarea:focus {
             outline: none;
             border-color: var(--primary);
             background-color: #ffffff;
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
 
-        input[type="text"]::placeholder {
+        input[type="text"]::placeholder, textarea::placeholder {
             color: #94a3b8;
             font-family: 'Inter', sans-serif;
         }
 
-        /* Output Area */
+        /* Specific Textarea Overrides */
         textarea {
-            width: 100%;
             flex: 1;
             min-height: 250px;
-            padding: 15px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 14px;
             line-height: 1.5;
-            color: #334155;
-            background-color: #f8fafc;
-            border: 1px solid var(--border);
-            border-radius: 6px;
             resize: none;
-            box-sizing: border-box;
             margin-bottom: 15px;
         }
 
-        textarea:focus {
-            outline: none;
-            border-color: var(--primary);
+        /* Mobex specific layout */
+        .mobex-input-group {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .mobex-input-group textarea {
+            flex: 1;
+            min-height: 160px;
+            margin-bottom: 0;
         }
 
         .actions-wrapper {
@@ -267,11 +275,11 @@
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab(event, 'auth-tab')">Authenticated Users</button>
             <button class="tab-btn" onclick="switchTab(event, 'user-tab')">Standard Users</button>
+            <button class="tab-btn" onclick="switchTab(event, 'mobex-tab')">Mobex Generator</button>
         </div>
 
         <!-- TAB 1: Authenticated Users -->
         <div id="auth-tab" class="tab-content active">
-            <!-- Left Pane -->
             <div class="pane">
                 <h3>File Paths</h3>
                 <div class="input-list" id="auth-input-list">
@@ -292,11 +300,9 @@
                 </div>
             </div>
 
-            <!-- Right Pane -->
             <div class="pane">
                 <h3>Generated Commands</h3>
                 <textarea id="auth-output" readonly placeholder="Commands will appear here..."></textarea>
-                
                 <div class="actions-wrapper">
                     <button class="btn btn-copy" onclick="copyOutput('auth-output', this)">Copy to Clipboard</button>
                 </div>
@@ -305,7 +311,6 @@
 
         <!-- TAB 2: Standard Users -->
         <div id="user-tab" class="tab-content">
-            <!-- Left Pane -->
             <div class="pane">
                 <h3>File Paths</h3>
                 <div class="input-list" id="user-input-list">
@@ -326,16 +331,46 @@
                 </div>
             </div>
 
-            <!-- Right Pane -->
             <div class="pane">
                 <h3>Generated Commands</h3>
                 <textarea id="user-output" readonly placeholder="Commands will appear here..."></textarea>
-                
                 <div class="actions-wrapper">
                     <button class="btn btn-copy" onclick="copyOutput('user-output', this)">Copy to Clipboard</button>
                 </div>
             </div>
         </div>
+
+        <!-- TAB 3: Mobex Generator -->
+        <div id="mobex-tab" class="tab-content">
+            <div class="pane">
+                <div class="mobex-input-group">
+                    <div>
+                        <span class="sub-label">1. Paste Original Mobex Export File (.mxtsessions)</span>
+                        <textarea id="mobex-template" placeholder="[Bookmarks]&#10;SubRep=&#10;ImgNum=42&#10;myazepwap0205.aiaazure.biz ([aaa])=#91#4%myazepwap0205.aiaazure.biz%3389%[aaa]%0%0%0%0%-1%0%0%-1%%%%%0%0%%-1%%-1%-1%0%-1%0%-1%0%0%0%0%#MobaFont%10%0%0%-1%15%236,236,236%30,30,30%180,180,192%0%-1%0%%xterm%-1%0%_Std_Colors_0_%80%24%0%1%-1%<none>%%0%0%-1%0%#0# #-1"></textarea>
+                    </div>
+                    <div>
+                        <span class="sub-label">2. Paste New VM List (One per line)</span>
+                        <textarea id="mobex-vms" placeholder="vm-server-01.domain.local&#10;vm-server-02.domain.local"></textarea>
+                    </div>
+                </div>
+                
+                <div class="actions-wrapper">
+                    <div class="btn-group">
+                        <button class="btn btn-generate" onclick="generateMobex()">Generate Mobex File</button>
+                        <button class="btn btn-reset" onclick="resetMobex()">Reset</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pane">
+                <h3>Generated Mobex Export</h3>
+                <textarea id="mobex-output" readonly placeholder="Generated Mobex export file will appear here..."></textarea>
+                <div class="actions-wrapper">
+                    <button class="btn btn-copy" onclick="copyOutput('mobex-output', this)">Copy to Clipboard</button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -351,7 +386,7 @@
             evt.currentTarget.classList.add('active');
         }
 
-        // --- Add New Input Row ---
+        // --- ICACLS Functions ---
         function addRow(containerId) {
             const container = document.getElementById(containerId);
             const newInput = document.createElement('input');
@@ -362,7 +397,6 @@
             newInput.focus();
         }
 
-        // --- Reset Function ---
         function resetTab(containerId, outputId) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
@@ -383,7 +417,6 @@
             }
         }
 
-        // --- Generate Commands ---
         function generate(groupName, containerId, outputId) {
             let output = '';
             let hasPaths = false;
@@ -392,7 +425,7 @@
 
             inputs.forEach(input => {
                 let rawValue = input.value.trim();
-                let path = rawValue.replace(/"/g, ''); // Strip quotes
+                let path = rawValue.replace(/"/g, '');
 
                 if (path !== '') {
                     hasPaths = true;
@@ -413,7 +446,96 @@
             outputBox.value = output.trim();
         }
 
-        // --- Copy to Clipboard ---
+        // --- Mobex Functions ---
+        function generateMobex() {
+            const templateText = document.getElementById('mobex-template').value.trim();
+            const vmsText = document.getElementById('mobex-vms').value.trim();
+
+            if (!templateText || !vmsText) {
+                document.getElementById('mobex-output').value = "⚠️ Please provide both the export template and the new VM list.";
+                return;
+            }
+
+            const lines = templateText.split('\n');
+            let header = [];
+            let templateLine = null;
+
+            // Find the bookmark line (contains #91#4%)
+            for (let i = 0; i < lines.length; i++) {
+                if (lines[i].includes('#91#4%')) {
+                    templateLine = lines[i];
+                    // Anything before this line is considered the header
+                    for (let j = 0; j < i; j++) {
+                        header.push(lines[j]);
+                    }
+                    break;
+                }
+            }
+
+            if (!templateLine) {
+                document.getElementById('mobex-output').value = "⚠️ Error: Could not find a valid Mobex bookmark line (containing '#91#4%') in the provided file.";
+                return;
+            }
+
+            // Parse the template line
+            const equalsIndex = templateLine.indexOf('=');
+            const settings = templateLine.substring(equalsIndex + 1);
+            
+            // Extract the old hostname (everything between the first two % signs after #91#4%)
+            const hostMatch = settings.match(/#91#4%([^%]+)%/);
+            if (!hostMatch) {
+                document.getElementById('mobex-output').value = "⚠️ Error: Could not extract hostname from the template line.";
+                return;
+            }
+            const oldHostname = hostMatch[1];
+
+            // Extract the username (usually in parentheses in the display name)
+            let username = "aaa"; // Default fallback
+            const userMatch = templateLine.match(/\(([^)]+)\)/);
+            if (userMatch) {
+                username = userMatch[1];
+            }
+
+            // Process VM list
+            const vms = vmsText.split('\n').map(v => v.trim()).filter(v => v);
+            if (vms.length === 0) return;
+
+            let newLines = [];
+
+            vms.forEach(vm => {
+                // Create new settings by replacing the old hostname
+                let newSettings = settings.split(`%${oldHostname}%`).join(`%${vm}%`);
+                
+                // Create new display name (e.g., "newvm.domain.com ([aaa])")
+                let newDisplayName = `${vm} (${username})`;
+                
+                newLines.push(`${newDisplayName}=${newSettings}`);
+            });
+
+            // Reconstruct the file
+            let output = "";
+            if (header.length > 0) {
+                output += header.join('\n') + '\n'; // Header remains exactly as pasted
+            }
+
+            output += newLines.join('\n');
+
+            document.getElementById('mobex-output').value = output;
+        }
+
+        function resetMobex() {
+            document.getElementById('mobex-template').value = '';
+            document.getElementById('mobex-vms').value = '';
+            document.getElementById('mobex-output').value = '';
+            
+            const copyBtn = document.querySelector(`button[onclick*="mobex-output"]`);
+            if(copyBtn) {
+                copyBtn.innerText = "Copy to Clipboard";
+                copyBtn.classList.remove('copied');
+            }
+        }
+
+        // --- Shared Functions ---
         function copyOutput(outputId, btnElement) {
             const outputText = document.getElementById(outputId).value;
             
